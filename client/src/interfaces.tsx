@@ -7,7 +7,8 @@ export interface ProductsInterface {
   discountPercentage?: number;
   rating: number;
   brand: string;
-  image: string;
+  images: string[];
+  thumbnail: string;
 }
 
 
