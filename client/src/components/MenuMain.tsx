@@ -20,7 +20,7 @@ export default function MenuMain({handleMenuClick, anchorEl, handleClose}: any) 
         </Button>
         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
           {['Laptops', 'Sunglasses', 'Smartphones', 'Skin-care', 'Tops', 'Vehicle', 'Motorcycle', 'Mobile-accessories'].map(el => (
-            <MenuItem onClick={handleClose}>
+            <MenuItem key={el} onClick={handleClose}>
               <Button color={"secondary"}>{el}</Button>
             </MenuItem>
           ))}
