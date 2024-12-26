@@ -7,14 +7,15 @@ const port = process.env.PORT || 5000
 
 const cors = require('cors')
 
-const Product = require('./models/product')
+
 
 app.use(cors())
 
-app.get("/products", async (req, res) =>{
-    const products = await Product.find({})
-    res.status(200).json(products.slice(0,10))
-})
+app.use(express.json())
+
+const productRouter = require('./routes/productRoute')
+
+app.use('/api/products', productRouter)
 
 const start = async () => {
     try {
