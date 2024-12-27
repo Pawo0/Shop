@@ -10,7 +10,7 @@ import {
 } from "@mui/icons-material";
 import {useRef} from "react";
 
-export default function SearchBar({favoriteCnt, cartCnt }:any){
+export default function HeaderFirstPart({favoriteCnt, cartCnt }:any){
   const textFieldRef = useRef<HTMLInputElement | null>(null)
 
   const handleSearchClick = () => {

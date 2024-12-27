@@ -1,4 +1,4 @@
-import {Box, Button, Card, CardContent, CardMedia, CircularProgress, Typography} from "@mui/material";
+import {Box, Button, Card, CardContent, CardMedia, CircularProgress, Divider, Typography} from "@mui/material";
 import {ProductsInterface} from "../interfaces.tsx"
 
 export default function ProductCard(props: { product?: ProductsInterface, empty?: boolean }) {
@@ -11,7 +11,7 @@ export default function ProductCard(props: { product?: ProductsInterface, empty?
           height="150"
           image={product.thumbnail}
           alt={product.title}
-          sx={{bgcolor:"black", border:"1px solid transparent"}}
+          sx={{bgcolor:"white", border:"1px solid transparent"}}
         />
         <CardContent sx={{height:"100px", overflow:"hidden" }}>
           <Typography variant="h5" color="white" fontWeight={"bold"}>
@@ -22,6 +22,7 @@ export default function ProductCard(props: { product?: ProductsInterface, empty?
                         color="white">{String(product.price).split('.')[1] + " zł"}
             </Typography>
           </Typography>
+          <Divider />
           <Typography variant="h6" sx={{borderBottom: "1px solid transparent"}}>{product.title}</Typography>
 
         </CardContent>
