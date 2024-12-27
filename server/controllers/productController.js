@@ -1,7 +1,7 @@
 const Product = require('../models/product')
 
 const getProducts = async (req, res) => {
-    const {limit, search, category} = req.query
+    const {limit = 16, page = 1, search, category} = req.query
     const query = {}
     if (search) {
         query.title = {
@@ -12,7 +12,8 @@ const getProducts = async (req, res) => {
     if (category) {
         query.category = category
     }
-    const products = await Product.find(query).limit(parseInt(limit))
+    const skip = (parseInt(page) - 1) * parseInt(limit)
+    const products = await Product.find(query).skip(skip).limit(parseInt(limit))
     res.json(products)
 }
 

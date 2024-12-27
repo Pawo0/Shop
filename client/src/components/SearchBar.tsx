@@ -62,7 +62,7 @@ export default function SearchBar({favoriteCnt, cartCnt }:any){
         }
       </IconButton>
       <Button endIcon={<AccountBoxOutlined/>} variant={"outlined"} sx={{color: "#676767"}}>
-        My account
+        My&nbsp;account
       </Button>
     </Box>
   </Toolbar>)

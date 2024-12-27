@@ -1,4 +1,4 @@
-import {Box, Typography} from "@mui/material";
+import {Box, Divider, Typography} from "@mui/material";
 import Carousel from "react-material-ui-carousel";
 import ProductCard from "./ProductCard.tsx";
 
@@ -44,6 +44,7 @@ export default function ProductCarousel(props: {products: string , title: string
       <Typography variant="h5" gutterBottom>
         {title}
       </Typography>
+      <Divider />
       <Carousel interval={5000} navButtonsAlwaysVisible sx={{padding: "10px 64px"}}>
         {
           products.length > 0 ?

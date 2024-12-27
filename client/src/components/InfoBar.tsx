@@ -1,7 +1,7 @@
 import {Box, Toolbar, Typography} from "@mui/material";
 import {KeyboardReturn, LocalShipping, Schedule} from "@mui/icons-material";
 
-export default function SzpanInfo() {
+export default function InfoBar() {
   const typoStyle = {display: "flex", fontSize:14}
   return (
     <Toolbar variant={"dense"} sx={{
