@@ -56,8 +56,8 @@ export default function Products() {
   }, [loading, location, page]);
 
   const productElements = products.map(product => (
-    <Grid2 size={2.4}>
-      <ProductCard key={product.id} product={product}/>
+    <Grid2 key={product.id} size={2.4}>
+      <ProductCard product={product}/>
     </Grid2>
   ));
 

@@ -37,7 +37,7 @@ export default function ProductCard(props: { product?: ProductsInterface, empty?
   else{
     return (
       <Card sx={{bgcolor: "primary.dark", color: "white", minWidth: 200, width: 200}}>
-        <Box sx={{display: "flex", justifyContent: "center", alignItems: "center", height: 150}}>
+        <Box sx={{display: "flex", justifyContent: "center", alignItems: "center", height: 325}}>
           <CircularProgress />
         </Box>
       </Card>

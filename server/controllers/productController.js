@@ -21,6 +21,12 @@ const getProducts = async (req, res) => {
     res.json({products, totalProducts})
 }
 
+const getCategoryList = async (req, res) => {
+    const categories = await Product.distinct('category')
+    res.status(200).json({categories})
+}
+
+
 const getProductById = async (req, res) => {
     const {id} = req.params
     const product = await Product.findById(id)
@@ -43,5 +49,6 @@ module.exports = {
     getProducts,
     getProductById,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    getCategoryList
 }
