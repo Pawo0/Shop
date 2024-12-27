@@ -5,14 +5,15 @@ export default function ProductCard(props: { product?: ProductsInterface, empty?
   const {product} = props
   if (product) {
     return (
-      <Card sx={{bgcolor: "primary.dark", color: "white", minWidth: 200, width: 200}} key={product.id}>
+      <Card sx={{bgcolor: "primary.dark", color: "white", minWidth: 200, width: 198}} key={product.id}>
         <CardMedia
           component="img"
           height="150"
           image={product.thumbnail}
           alt={product.title}
+          sx={{bgcolor:"black", border:"1px solid transparent"}}
         />
-        <CardContent sx={{height:"130px", overflow:"hidden"}}>
+        <CardContent sx={{height:"100px", overflow:"hidden" }}>
           <Typography variant="h5" color="white" fontWeight={"bold"}>
             {
               String(product.price).split('.')[0] + "."

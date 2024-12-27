@@ -3,9 +3,40 @@ import Carousel from "react-material-ui-carousel";
 import ProductCard from "./ProductCard.tsx";
 
 import {ProductsInterface} from "../interfaces.tsx"
+import {useEffect, useState} from "react";
 
-export default function ProductCarousel(props: { products: ProductsInterface[], title: string }) {
-  const {products, title} = props
+export default function ProductCarousel(props: {products: string , title: string }) {
+  const [products, setProducts] = useState<ProductsInterface[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchData = () => {
+      console.log("fetching data")
+      fetch(props.products)
+        .then(res => res.json())
+        .then(data => {
+          setProducts(data)
+          setLoading(false)
+        })
+        .catch(err => {
+          console.error('Błąd pobierania danych:', err)
+        })
+    }
+
+    fetchData()
+
+    const intervalId = setInterval(() => {
+      if (loading) {
+        fetchData()
+      } else {
+        clearInterval(intervalId)
+      }
+    }, 5000) // Próbuj co 5 sekund
+
+    return () => clearInterval(intervalId)
+  }, [loading])
+
+  const { title} = props
   const itemsPerPage = 4
   const pages = Math.ceil(products.length / itemsPerPage)
   return (
