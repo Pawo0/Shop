@@ -8,9 +8,14 @@ import {
   ShoppingCartOutlined
 } from "@mui/icons-material";
 import SearchBar from "./SearchBar.tsx";
+import {useContext} from "react";
+import {ShoppingContext} from "../contexts/ShoppingContext.tsx";
 
-export default function HeaderFirstPart({favoriteCnt, cartCnt}: any) {
 
+export default function HeaderFirstPart() {
+  const shoppingContext = useContext(ShoppingContext)
+  if (!shoppingContext) throw new Error("ShoppingContext not found")
+  const {favoriteCnt, cartCnt} = shoppingContext
 
   return (<Toolbar sx={{bgcolor: "primary.light", display: "flex", justifyContent: "space-between"}}>
     <Button component={Link} to={"/"} sx={{color: "black"}} disableRipple>

@@ -2,7 +2,7 @@ import {Divider, FormControl, IconButton, InputLabel, MenuItem, Select, TextFiel
 import {Search} from "@mui/icons-material";
 import React, {useContext, useState} from "react";
 import {SearchContext} from "../contexts/SearchContext.tsx";
-import useCategories from "./hooks/useCategories.ts";
+import useCategories from "../hooks/useCategories.ts";
 import {useNavigate} from "react-router-dom";
 
 export default function SearchBar() {

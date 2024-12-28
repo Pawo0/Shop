@@ -1,9 +1,14 @@
 import {Box, Button, Menu, MenuItem, Toolbar} from "@mui/material";
 import {ArrowDropDown} from "@mui/icons-material";
 import MenuButton from "./MenuButton.tsx";
-import useCategories from "./hooks/useCategories.ts";
+import useCategories from "../hooks/useCategories.ts";
+import React from "react";
 
-export default function MenuMain({handleMenuClick, anchorEl, handleClose}: any) {
+export default function MenuMain({handleMenuClick, anchorEl, handleClose}: {
+  handleMenuClick: (e: React.MouseEvent<HTMLButtonElement>) => void,
+  anchorEl: HTMLElement | null,
+  handleClose: () => void
+}) {
   const howManyCategories = 8
   const categories = useCategories()
 
