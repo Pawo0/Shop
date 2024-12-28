@@ -15,6 +15,7 @@ export default function MenuButton({category}: { category: string }) {
       to={`/category/${category.toLowerCase()}`}
       color={"secondary"}
       onClick={() => setSearchQuery("")}
+      sx={{minWidth:"50px"}}
     >
       {category}
     </Button>
