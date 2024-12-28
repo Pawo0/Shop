@@ -1,29 +1,18 @@
 import {Box, Button, Menu, MenuItem, Toolbar} from "@mui/material";
 import {ArrowDropDown} from "@mui/icons-material";
-import {Link} from "react-router-dom";
-import {useEffect, useState} from "react";
+import MenuButton from "./MenuButton.tsx";
+import useCategories from "./hooks/useCategories.ts";
 
 export default function MenuMain({handleMenuClick, anchorEl, handleClose}: any) {
-  const [categories, setCategories] = useState<string[]>([])
-  const howManyCategories = 5
-
-  useEffect(() => {
-    fetch('http://localhost:5000/api/products/categories')
-      .then(res => res.json())
-      .then(data => {
-        const cat = data.categories.filter((el: string) => (!el.match('^men') && !el.match('^women')))
-        setCategories(cat)
-      })
-  }, []);
+  const howManyCategories = 8
+  const categories = useCategories()
 
   return (
     <Toolbar sx={{bgcolor: "primary.main"}}>
 
       <Box>
-        {['All', 'Women', 'Men', ...categories.slice(0, howManyCategories)].map(category => (
-          <Button component={Link} to={`/category/${category.toLowerCase()}`} key={category} color={"secondary"}>
-            {category}
-          </Button>
+        {categories.slice(0, howManyCategories).map(category => (
+          <MenuButton category={category} key={category}/>
         ))}
         { // if there are more than 5 categories, show the "Other" button
           categories.length > howManyCategories &&
@@ -35,9 +24,9 @@ export default function MenuMain({handleMenuClick, anchorEl, handleClose}: any) 
 
                 <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
 
-                  {categories.slice(howManyCategories).map(el => (
-                    <MenuItem key={el} onClick={handleClose}>
-                      <Button component={Link} to={`/category/${el.toLowerCase()}`} color={"secondary"}>{el}</Button>
+                  {categories.slice(howManyCategories).map(category => (
+                    <MenuItem key={category} onClick={handleClose}>
+                      <MenuButton category={category}/>
                     </MenuItem>
                   ))}
                 </Menu>
