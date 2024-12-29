@@ -1,4 +1,5 @@
 export interface ProductsInterface {
+  _id: string;
   id: number;
   title: string;
   description: string;
@@ -9,6 +10,7 @@ export interface ProductsInterface {
   brand: string;
   images: string[];
   thumbnail: string;
+  stock: number;
 }
 
 

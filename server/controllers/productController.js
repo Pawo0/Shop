@@ -1,4 +1,5 @@
 const Product = require('../models/product')
+const mongoose = require("mongoose");
 
 const getProducts = async (req, res) => {
     const {limit = 15, page = 1, search, category} = req.query
@@ -11,7 +12,7 @@ const getProducts = async (req, res) => {
     }
     if (category && category !== 'all') {
         query.category = {
-            $regex: "^"+category,
+            $regex: "^" + category,
             $options: 'i'
         }
     }
@@ -29,8 +30,11 @@ const getCategoryList = async (req, res) => {
 
 const getProductById = async (req, res) => {
     const {id} = req.params
-    const product = await Product.findById(id)
-    res.status(200).json(product)
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({message: 'Product not found'})
+    }
+    const product = await Product.findOne({_id: id})
+    res.status(200).json({product})
 }
 
 const updateProduct = async (req, res) => {
