@@ -31,7 +31,7 @@ export default function MenuMain({handleMenuClick, anchorEl, handleClose}: {
 
                   {categories.slice(howManyCategories).map(category => (
                     <MenuItem key={category} onClick={handleClose}>
-                      <MenuButton category={category}/>
+                      <MenuButton category={category} fullWidth={true}/>
                     </MenuItem>
                   ))}
                 </Menu>

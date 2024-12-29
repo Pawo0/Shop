@@ -3,8 +3,10 @@ import {Button} from "@mui/material";
 import {useContext} from "react";
 import {SearchContext} from "../contexts/SearchContext.tsx";
 
-export default function MenuButton({category}: { category: string }) {
+export default function MenuButton({category, fullWidth}: { category: string, fullWidth?: boolean }) {
   const searchContext = useContext(SearchContext)
+  const fullWidthStyle = fullWidth ? {justifyContent:"flex-start"} : {}
+
   if (!searchContext) {
     throw new Error("SearchContext must be used within a SearchProvider");
   }
@@ -15,7 +17,8 @@ export default function MenuButton({category}: { category: string }) {
       to={`/category/${category.toLowerCase()}`}
       color={"secondary"}
       onClick={() => setSearchQuery("")}
-      sx={{minWidth:"50px"}}
+      fullWidth={fullWidth}
+      sx={fullWidthStyle}
     >
       {category}
     </Button>
