@@ -1,10 +1,11 @@
 import {Grid2} from "@mui/material";
-import { useState} from "react";
+import {useState} from "react";
 import {ProductsInterface} from "../interfaces.tsx";
 import {useParams} from "react-router-dom";
 import ProductImage from "../components/ProductImage.tsx";
 import ProductDetails from "../components/ProductDetails.tsx";
 import useFetchWithInterval from "../hooks/useFetchWithInterval.ts";
+import Reviews from "../components/Reviews.tsx";
 
 export default function Product() {
   const params = useParams()
@@ -64,6 +65,7 @@ export default function Product() {
         handleDecrease={handleDecrease}
         handleIncrease={handleIncrease}
       />
+      <Reviews product={product}/>
     </Grid2>
   )
 }
