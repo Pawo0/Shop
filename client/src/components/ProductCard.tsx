@@ -59,6 +59,7 @@ export default function ProductCard(props: { product?: ProductsInterface, empty?
     )
   } else {
     return (
+      // todo po załadaowaniu produktu psuje sie rozmiar
       <Card sx={{bgcolor: "primary.dark", color: "white", minWidth: 200, width: 200}}>
         <Box sx={{display: "flex", justifyContent: "center", alignItems: "center", height: 325}}>
           <CircularProgress/>

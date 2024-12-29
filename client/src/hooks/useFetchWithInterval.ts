@@ -1,5 +1,4 @@
 import {useEffect} from "react";
-import {data} from "react-router-dom";
 
 interface FetchParams {
   url: string;
@@ -35,6 +34,7 @@ export default function useFetchWithInterval({
           return res.json()
         })
         .then(data => {
+          console.log('Fetched data:', data)
           if (onFetchData) {
             onFetchData(data)
           }
@@ -55,6 +55,5 @@ export default function useFetchWithInterval({
     }, interval)
 
     return () => clearInterval(intervalId)
-  }, dependencies);
-  return [data, loading]
+  }, [...dependencies, loading]);
 }

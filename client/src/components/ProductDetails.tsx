@@ -5,7 +5,7 @@ import {
   CardContent,
   CircularProgress,
   Divider, Grid2,
-  IconButton,
+  IconButton, Rating,
   TextField,
   Typography
 } from "@mui/material";
@@ -36,6 +36,7 @@ export default function ProductDetails({size, product, loading, notFound, quanti
                 <><Typography component={"span"} sx={{fontSize: "1rem"}}>from</Typography> {product?.brand}</>
           }</Typography>
           <Divider/>
+          {/*todo ładniejsze wyswietlanie - brand na pewno nie jako cos głownego*/}
           {loading ? (
             <Box sx={{display: "flex", justifyContent: "center", alignItems: "center", height: 500}}>
               <CircularProgress/>
@@ -46,7 +47,7 @@ export default function ProductDetails({size, product, loading, notFound, quanti
                 <Typography variant={"h6"} p={2}>Price: {product.price} zł</Typography>
                 <Typography variant={"h6"} p={2}>Category: {product.category}</Typography>
                 <Typography variant={"h6"} p={2}>Brand: {product.brand}</Typography>
-                <Typography variant={"h6"} p={2}>Rating: {product.rating}</Typography>
+                <Typography variant={"h6"} p={2}>Rating: {product.rating} <Rating value={product.rating} readOnly/></Typography>
                 <Divider/>
                 <Box sx={{display: "flex", alignItems: "center", m: 2}}>
                     <IconButton disabled={quantity === 1} onClick={handleDecrease}>
