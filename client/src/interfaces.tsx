@@ -15,8 +15,13 @@ export interface ProductsInterface {
 }
 
 export interface ReviewInterface {
-  userId: string;
-  username: string;
+  productId: string;
+  user: {
+    userId: string;
+    username: string;
+    firstName?: string;
+    lastName?: string;
+  }
   rating: number;
   comment: string;
   date: string;

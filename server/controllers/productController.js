@@ -1,4 +1,5 @@
 const Product = require('../models/product')
+const Reviews = require('../models/reviews')
 const mongoose = require("mongoose");
 
 const getProducts = async (req, res) => {
@@ -48,8 +49,14 @@ const updateProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
     const {id} = req.params
-    await Product.findOneAndDelete({_id: id})
-    res.status(200).json({message: 'Product deleted'})
+    const deletedProduct = await Product.findOneAndDelete({_id: id})
+    res.status(200).json({message: 'Product deleted', product: deletedProduct})
+}
+
+const getProductReviews = async (req, res) => {
+    const {id} = req.params
+    const reviews = await Reviews.find({productId: id})
+    res.status(200).json({reviews})
 }
 
 module.exports = {
@@ -57,5 +64,6 @@ module.exports = {
     getProductById,
     updateProduct,
     deleteProduct,
-    getCategoryList
+    getCategoryList,
+    getProductReviews
 }

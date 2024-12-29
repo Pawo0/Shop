@@ -12,13 +12,22 @@ import {
 } from "@mui/material";
 import {ProductsInterface} from "../interfaces.tsx";
 import {ReviewsOutlined} from "@mui/icons-material";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 
 export default function Reviews({product}: { product: ProductsInterface | null }) {
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>("");
   const [ratingError, setRatingError] = useState<boolean>(false);
   const [commentError, setCommentError] = useState<boolean>(false);
+
+  const [reviews, setReviews] = useState<ProductsInterface["reviews"]>([])
+
+  useEffect(() => {
+    if (!product) return
+    fetch(`http://localhost:5000/api/products/${product._id}/reviews`)
+      .then(res => res.json())
+      .then(data => setReviews(data.reviews))
+  }, [product]);
 
   const handleRatingChange = (_: React.SyntheticEvent, value: number | null) => {
     if (value) setRating(value)
@@ -43,7 +52,7 @@ export default function Reviews({product}: { product: ProductsInterface | null }
             <CardHeader title={<>Reviews <ReviewsOutlined/></>}/>
             <Divider/>
             <CardContent>
-              {product?.reviews.map((review, idx) => (
+              {reviews.map((review, idx) => (
 
                 <Box key={idx} sx={{
                   display: "flex",
@@ -55,9 +64,9 @@ export default function Reviews({product}: { product: ProductsInterface | null }
                   pl: 1,
                   cursor: "pointer"
                 }}>
-                  <Avatar>{review.username.charAt(0)}</Avatar>
+                  <Avatar>{review.user.username.charAt(0)}</Avatar>
                   <Box sx={{ml: 2}}>
-                    <Typography variant="body2" color="textSecondary">{review.username}</Typography>
+                    <Typography variant="body2" color="textSecondary">{review.user.username}</Typography>
                     <Rating value={review.rating} readOnly/>
                     <Typography variant="body1">{review.comment}</Typography>
                     <Typography variant="caption" color="textSecondary">{review.date}</Typography>

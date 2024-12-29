@@ -33,7 +33,7 @@ export default function Product() {
     onNotFound: () => {
       setNotFound(true)
     },
-    onFetchData: (data: any) => {
+    onFetchData: (data: { product: ProductsInterface }) => {
       setProduct(data.product)
       setSelectedImage(data.product.images[0])
     },
