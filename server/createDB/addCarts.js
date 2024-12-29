@@ -52,24 +52,30 @@ const insertCartsToDatabase = async (carts) => {
 
         const formattedCarts = carts.map((cart, index) => {
             if (index >= users.length) return null
-            const  currUser = users[index];
+            const currUser = users[index];
             return {
-            userId: currUser._id,
-            products: cart.products.map((product)=>{
-                const currProduct = productMap.get(product.id)
-                return {
-                    productId: currProduct._id,
-                    quantity: product.quantity,
-                    price: product.price,
-                    discountPercentage: product.discountPercentage
-                }
-            })
-        ,
-            total: cart.total,
-            discountedTotal: cart.discountedTotal,
-            totalProducts: cart.totalProducts,
-            totalQuantity: cart.totalQuantity,
-        }}).filter(cart => cart != null);
+                user:{
+                    userId: currUser._id,
+                    username: currUser.username,
+                    firstName: currUser.firstName,
+                    lastName: currUser.lastName,
+                },
+                products: cart.products.map((product) => {
+                    const currProduct = productMap.get(product.id)
+                    return {
+                        productId: currProduct._id,
+                        quantity: product.quantity,
+                        price: product.price,
+                        discountPercentage: product.discountPercentage
+                    }
+                })
+                ,
+                total: cart.total,
+                discountedTotal: cart.discountedTotal,
+                totalProducts: cart.totalProducts,
+                totalQuantity: cart.totalQuantity,
+            }
+        }).filter(cart => cart != null);
 
 
         await Cart.insertMany(formattedCarts);

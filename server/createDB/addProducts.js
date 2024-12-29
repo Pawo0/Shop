@@ -62,11 +62,23 @@ const insertProductsToDatabase = async (products) => {
                 const randomUser = users[Math.floor(Math.random() * users.length)];
                 return {
                     userId: randomUser._id,
+                    username: randomUser.username,
+                    firstName: randomUser.firstName,
+                    lastName: randomUser.lastName,
                     rating: review.rating,
                     comment: review.comment,
                     date: review.date
                 }
             }),
+            dimensions: {
+                width: product.dimensions.width,
+                height: product.dimensions.height,
+                depth: product.dimensions.depth
+            },
+            availabilityStatus: product.availabilityStatus,
+            weight: product.weight,
+            returnPolicy: product.returnPolicy,
+            shippingInformation: product.shippingInformation,
         }));
 
 

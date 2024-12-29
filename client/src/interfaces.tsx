@@ -11,6 +11,15 @@ export interface ProductsInterface {
   images: string[];
   thumbnail: string;
   stock: number;
+  reviews: ReviewInterface[];
+}
+
+export interface ReviewInterface {
+  userId: string;
+  username: string;
+  rating: number;
+  comment: string;
+  date: string;
 }
 
 
