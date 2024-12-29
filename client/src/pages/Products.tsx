@@ -5,6 +5,7 @@ import PaginationControls from "../components/PaginationControls.tsx";
 import ProductList from "../components/ProductList.tsx";
 import {Typography} from "@mui/material";
 import {SearchContext} from "../contexts/SearchContext.tsx";
+import useFetchWithInterval from "../hooks/useFetchWithInterval.ts";
 
 export default function Products() {
   const {category} = useParams();
@@ -34,34 +35,17 @@ export default function Products() {
   }, [location, productsPerPage]);
 
 
-  useEffect(() => {
-    const fetchData = () => {
-      console.log("fetching data")
-      const fetchUrl = `http://localhost:5000/api/products?category=${category}&page=${page}&limit=${productsPerPage}&search=${searchQuery}`
-      fetch(fetchUrl)
-        .then(res => res.json())
-        .then(data => {
-          setProducts(data.products)
-          setAllPages(Math.ceil(data.totalProducts / productsPerPage))
-          setLoading(false)
-        })
-        .catch(err => {
-          console.error('Błąd pobierania danych:', err)
-        })
-    }
-
-    fetchData()
-
-    const intervalId = setInterval(() => {
-      if (loading) {
-        fetchData()
-      } else {
-        clearInterval(intervalId)
-      }
-    }, 5000)
-
-    return () => clearInterval(intervalId)
-  }, [loading, location, page, searchQuery]);
+  useFetchWithInterval({
+    url: `http://localhost:5000/api/products?category=${category}&page=${page}&limit=${productsPerPage}&search=${searchQuery}`,
+    onFetchData: (data: any) => {
+      setProducts(data.products)
+      setAllPages(Math.ceil(data.totalProducts / productsPerPage))
+    },
+    dependencies: [category, page, searchQuery],
+    interval: 5000,
+    loading,
+    setLoading
+  })
 
 
   return (
