@@ -6,12 +6,12 @@ import {
   CardContent,
   CardHeader,
   Divider,
-  Grid2,
+  Grid2, IconButton,
   Rating, TextField,
   Typography
 } from "@mui/material";
 import {ProductsInterface} from "../interfaces.tsx";
-import {ReviewsOutlined} from "@mui/icons-material";
+import {DeleteForever, Edit, ReviewsOutlined} from "@mui/icons-material";
 import React, {useEffect, useState} from "react";
 
 export default function Reviews({product}: { product: ProductsInterface | null }) {
@@ -24,7 +24,7 @@ export default function Reviews({product}: { product: ProductsInterface | null }
 
   useEffect(() => {
     if (!product) return
-    fetch(`http://localhost:5000/api/products/${product._id}/reviews`)
+    fetch(`http://localhost:5000/api/reviews/product/${product._id}`)
       .then(res => res.json())
       .then(data => setReviews(data.reviews))
   }, [product]);
@@ -40,7 +40,27 @@ export default function Reviews({product}: { product: ProductsInterface | null }
     else setCommentError(false)
     if (!rating || !comment) return
 
-    // todo send review to the server
+    fetch(`http://localhost:5000/api/reviews/add`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        rating, comment, user: {
+          userId: "676cbb266855535f0d02947d",
+          username: "derek"
+        }, productId: product?._id
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+          console.log(data)
+          if (data.success) {
+            setReviews([...reviews, data.review])
+          }
+        }
+      )
+
     console.log(rating, comment)
     setComment("")
     setRating(0)
@@ -61,22 +81,34 @@ export default function Reviews({product}: { product: ProductsInterface | null }
                   '&:hover': {
                     backgroundColor: "#f0f0f0"
                   },
-                  pl: 1,
-                  cursor: "pointer"
+                  padding: "5px 16px",
+                  cursor: "pointer",
+                  borderRadius: 4
                 }}>
                   <Avatar>{review.user.username.charAt(0)}</Avatar>
-                  <Box sx={{ml: 2}}>
+                  <Box sx={{ml: 2, flex: 1}}>
                     <Typography variant="body2" color="textSecondary">{review.user.username}</Typography>
                     <Rating value={review.rating} readOnly/>
                     <Typography variant="body1">{review.comment}</Typography>
                     <Typography variant="caption" color="textSecondary">{review.date}</Typography>
+                  </Box>
+                  <Box sx={{display: "flex", width: "100px", justifyContent: "center"}}>
+                    {review.user.userId === "676cbb266855535f0d02947d" &&
+                        <>
+                            <IconButton>
+                                <Edit/>
+                            </IconButton>
+                            <IconButton color={"error"}>
+                                <DeleteForever/>
+                            </IconButton>
+                        </>}
                   </Box>
                 </Box>
               ))}
                 <Divider/>
             </CardContent>
             <CardActions>
-                <Box p={2}>
+                <Box p={2} width="100%">
                     <Typography variant="h6">Add a review</Typography>
                   {ratingError && <Typography color="error">Rating is required</Typography>}
                     <Rating value={rating} onChange={handleRatingChange}/>
@@ -89,7 +121,7 @@ export default function Reviews({product}: { product: ProductsInterface | null }
                         onChange={(e) => setComment(e.target.value)}
                         sx={{mt: 2}}
                         error={commentError}
-                        helperText={commentError ? "Comment is required" : ""}
+                        helperText={commentError ? "Comment must have at least 3 letters..." : ""}
                     />
                     <Box sx={{display: "flex", justifyContent: "flex-end", mt: 2}}>
                         <Button variant={"contained"} onClick={handleSubmit}>Submit</Button>
