@@ -15,6 +15,7 @@ export interface ProductsInterface {
 }
 
 export interface ReviewInterface {
+  _id: string;
   productId: string;
   user: {
     userId: string;

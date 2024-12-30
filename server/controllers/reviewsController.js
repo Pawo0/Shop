@@ -42,7 +42,7 @@ const deleteReview = async (req, res) => {
     if (!deletedReview) {
         return res.status(404).json({message: "Review not found"})
     }
-    res.status(200).json({deletedReview})
+    res.status(200).json({deletedReview, success: true})
 }
 
 const editReview = async (req, res) => {
@@ -52,7 +52,7 @@ const editReview = async (req, res) => {
     if (!review) {
         return res.status(404).json({message: "Review not found"})
     }
-    res.status(200).json({review})
+    res.status(200).json({review, success: true})
 }
 
 module.exports = {
