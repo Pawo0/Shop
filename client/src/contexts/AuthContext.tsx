@@ -18,7 +18,7 @@ interface DecodedToken {
 export const AuthContext = createContext<AuthContext | null>(null)
 
 export const AuthProvider = ({children}: { children: ReactNode }) => {
-  const [token, setToken] = useState("")
+  const [token, setToken] = useState(localStorage.getItem("token") || "")
   const [username, setUsername] = useState("")
   const [role, setRole] = useState("")
   const [userId, setUserId] = useState("")

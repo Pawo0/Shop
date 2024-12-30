@@ -17,15 +17,18 @@ const loginUser = async (req, res) => {
 }
 
 const registerUser = async (req, res) => {
-    const {username, email, password} = req.body
+    const {username, email, password, role} = req.body
     if (!username || !email || !password) {
         return res.status(400).json({message: 'Username, email and password are required', success: false})
     }
+    if (role && role !== 'user' && role !== 'admin') {
+        return res.status(400).json({message: 'Invalid role', success: false})
+    }
     const existingUser = await User.find({$or: [{username}, {email}]})
-    if (existingUser) {
+    if (existingUser.length) {
         return res.status(400).json({message: 'User with this username or email already exists', success: false})
     }
-    const user = await User.create({username, email, password})
+    const user = await User.create({username, email, password, role})
     const token = generateToken(user)
     res.status(201).json({user, token, success: true})
 }
@@ -46,9 +49,43 @@ const getUserById = async (req, res) => {
     }
 }
 
+const deleteUser = async (req, res) => {
+    const {id} = req.params
+    const user = await User.findOneAndDelete({_id: id})
+    if (user) {
+        res.status(200).json({message: 'User deleted', success: true, user})
+    } else {
+        res.status(404).json({message: 'User not found', success: false})
+    }
+}
+
+const updateUser = async (req, res) => {
+    const {id} = req.params
+    const {
+        username,
+        email,
+        password,
+        role,
+        firstName,
+        lastName,
+        address,
+        phone
+    } = req.body // interface User
+    if (role && role !== 'user' && role !== 'admin') {
+        return res.status(400).json({message: 'Invalid role', success: false})
+    }
+    const user = await User.findByIdAndUpdate(id, req.body, {new: true})
+    if (user) {
+        res.status(200).json({user, message: "User updated", success: true})
+    } else {
+        res.status(404).json({message: 'User not found', success: false})
+    }
+}
 module.exports = {
     loginUser,
     registerUser,
     getAllUsers,
-    getUserById
+    getUserById,
+    deleteUser,
+    updateUser
 }

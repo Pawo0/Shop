@@ -1,4 +1,5 @@
 import {
+  Alert, AlertTitle,
   Avatar,
   Box,
   Card,
@@ -12,9 +13,11 @@ import {
 } from "@mui/material";
 import {ProductsInterface} from "../interfaces.tsx";
 import {ReviewsOutlined} from "@mui/icons-material";
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import AddReview from "./AddReview.tsx";
 import ReviewButtons from "./ReviewButtons.tsx";
+import {AuthContext} from "../contexts/AuthContext.tsx";
+import {Link} from "react-router-dom";
 
 export default function Reviews({product}: { product: ProductsInterface | null }) {
   const [rating, setRating] = useState<number>(0);
@@ -27,8 +30,9 @@ export default function Reviews({product}: { product: ProductsInterface | null }
   const [editingRating, setEditingRating] = useState<number>(0);
   const [deletingReviewId, setDeletingReviewId] = useState<string | null>(null);
 
-  const tmpUserId = "676cbb266855535f0d02947d"
-  const tmpUsername = "derek"
+  const authContext = useContext(AuthContext)
+  const {userId, username, role} = authContext!
+
 
   useEffect(() => {
     if (!product) return;
@@ -55,8 +59,8 @@ export default function Reviews({product}: { product: ProductsInterface | null }
       },
       body: JSON.stringify({
         rating, comment, user: {
-          userId: tmpUserId,
-          username: tmpUsername
+          userId: userId,
+          username: username
         }, productId: product?._id
       })
     })
@@ -172,7 +176,7 @@ export default function Reviews({product}: { product: ProductsInterface | null }
                     )}
                     <Typography variant="caption" color="textSecondary">{review.date}</Typography>
                   </Box>
-                  <ReviewButtons review={review} tmpUserId={tmpUserId} editingReviewId={editingReviewId}
+                  <ReviewButtons review={review} userId={userId} role={role} editingReviewId={editingReviewId}
                                  deletingReviewId={deletingReviewId}
                                  setDeletingReviewId={setDeletingReviewId} handleSaveClick={handleSaveClick}
                                  handleEditClick={handleEditClick} handleDiscardClick={handleDiscardClick}
@@ -183,8 +187,25 @@ export default function Reviews({product}: { product: ProductsInterface | null }
               ))}
             </CardContent>
             <Divider/>
-            <AddReview rating={rating} comment={comment} setComment={setComment} ratingError={ratingError}
-                       commentError={commentError} handleRatingChange={handleRatingChange} handleSubmit={handleSubmit}/>
+          {
+            userId !== "" ?
+              <AddReview rating={rating} comment={comment} setComment={setComment} ratingError={ratingError}
+                         commentError={commentError} handleRatingChange={handleRatingChange}
+                         handleSubmit={handleSubmit}/> :
+              <Box sx={{p: 2}}>
+                {/*<Typography variant="h6" sx={{textAlign: "center"}}>*/}
+                {/*  <Typography component={Link} variant="h6" to={"/signin"} color={"secondary"}*/}
+                {/*              sx={{textDecoration: "none"}}>Login</Typography> to add a review*/}
+                {/*</Typography>*/}
+                <Alert severity="info" >
+                  <AlertTitle>Info</AlertTitle>
+                  <Typography variant="body1">
+                    <Link to={`/signin?redirect=/product/${product?._id}`} >Login</Link>, to add a comment.
+                  </Typography>
+                </Alert>
+              </Box>
+          }
+
         </Card>
     }</Grid2>
   );

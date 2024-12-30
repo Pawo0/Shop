@@ -1,6 +1,6 @@
 import {Box, Button, Card, CardHeader, Divider, FormControl, FormLabel, Stack, TextField} from "@mui/material";
 import React, {useContext, useState} from "react";
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import {AuthContext} from "../contexts/AuthContext.tsx";
 
 export default function SignIn() {
@@ -12,6 +12,8 @@ export default function SignIn() {
   const {setToken} = authContext!;
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const redirectPath = new URLSearchParams(location.search).get("redirect") || "/";
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +35,7 @@ export default function SignIn() {
         if (data.success) {
           localStorage.setItem("token", data.token);
           setToken(data.token);
-          navigate("/");
+          navigate(redirectPath);
         }
       })
 

@@ -12,7 +12,7 @@ export default function User() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     setToken("");
-    navigate("/");
+    navigate("/signin");
   }
 
     return (

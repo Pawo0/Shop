@@ -4,7 +4,8 @@ import {ReviewInterface} from "../interfaces.tsx";
 
 interface ReviewButtonsProps {
   review: ReviewInterface;
-  tmpUserId: string;
+  userId: string;
+  role: string;
   editingReviewId: string | null;
   deletingReviewId: string | null;
   setDeletingReviewId: (id: string | null) => void;
@@ -17,7 +18,8 @@ interface ReviewButtonsProps {
 
 export default function ReviewButtons({
                                         review,
-                                        tmpUserId,
+                                        userId,
+                                        role,
                                         editingReviewId,
                                         deletingReviewId,
                                         setDeletingReviewId,
@@ -26,10 +28,10 @@ export default function ReviewButtons({
                                         handleDiscardClick,
                                         handleDeleteClick,
                                         handleConfirmDeleteClick
-                                      }: ReviewButtonsProps ) {
+                                      }: ReviewButtonsProps) {
   return (
     <Box sx={{display: "flex", width: "100px", justifyContent: "center"}}>
-      {review.user.userId === tmpUserId &&
+      {(role === "admin" || review.user.userId === userId) &&
         (deletingReviewId === review._id ?
           <>
             <IconButton color={"success"} onClick={() => handleConfirmDeleteClick(review._id)}>
