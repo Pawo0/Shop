@@ -10,12 +10,15 @@ import {
 import SearchBar from "./SearchBar.tsx";
 import {useContext} from "react";
 import {ShoppingContext} from "../contexts/ShoppingContext.tsx";
+import {AuthContext} from "../contexts/AuthContext.tsx";
 
 
 export default function HeaderFirstPart() {
   const shoppingContext = useContext(ShoppingContext)
-  if (!shoppingContext) throw new Error("ShoppingContext not found")
-  const {favoriteCnt, cartCnt} = shoppingContext
+  const {favoriteCnt, cartCnt} = shoppingContext!
+
+  const authContext = useContext(AuthContext)
+  const {username} = authContext!
 
   return (<Toolbar sx={{bgcolor: "primary.light", display: "flex", justifyContent: "space-between"}}>
     <Button component={Link} to={"/"} sx={{color: "black"}} disableRipple>
@@ -34,7 +37,7 @@ export default function HeaderFirstPart() {
       maxWidth: "550px"
     }}>
 
-      <SearchBar />
+      <SearchBar/>
 
 
     </Box>
@@ -53,10 +56,13 @@ export default function HeaderFirstPart() {
             <Badge badgeContent={cartCnt} color={"secondary"}><ShoppingCart/></Badge> :
             <ShoppingCartOutlined/>
         }
-      </IconButton>
-      <Button endIcon={<AccountBoxOutlined/>} variant={"outlined"} sx={{color: "#676767"}}>
+      </IconButton>{username ?
+      <Button component={Link} to={"/user"} endIcon={<AccountBoxOutlined/>} variant={"outlined"}
+              sx={{color: "#676767"}}>{username}</Button> :
+      <Button component={Link} to={"/signin"} endIcon={<AccountBoxOutlined/>} variant={"outlined"}
+              sx={{color: "#676767"}}>
         My&nbsp;account
-      </Button>
+      </Button>}
     </Box>
   </Toolbar>)
 }

@@ -1,13 +1,46 @@
 import {Box, Button, Card, CardHeader, Divider, FormControl, FormLabel, Stack, TextField} from "@mui/material";
-import {useState} from "react";
-import {Link} from "react-router-dom";
+import React, {useContext, useState} from "react";
+import {Link, useNavigate} from "react-router-dom";
+import {AuthContext} from "../contexts/AuthContext.tsx";
 
 export default function SignIn() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [usernameError, setUsernameError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const authContext = useContext(AuthContext)
+  const {setToken} = authContext!;
+
+  const navigate = useNavigate();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!username) setUsernameError(true);
+    else setUsernameError(false);
+    if (!password) setPasswordError(true);
+    else setPasswordError(false);
+    if (!username || !password) return
+
+    fetch("http://localhost:5000/api/users/login", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({username, password})
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          localStorage.setItem("token", data.token);
+          setToken(data.token);
+          navigate("/");
+        }
+      })
+
+  }
 
   return (
-    <Card variant={"outlined"} sx={{width: "50%", margin: "25px auto", boxShadow:6}}>
+    <Card variant={"outlined"} sx={{width: "50%", margin: "25px auto", boxShadow: 6}}>
       <CardHeader title={"Sign In"}/>
       <Stack spacing={2}>
         <Box component={"form"} noValidate autoComplete={"off"}
@@ -15,6 +48,7 @@ export default function SignIn() {
           <FormControl>
             <FormLabel htmlFor={"username"}>Username</FormLabel>
             <TextField
+              error={usernameError}
               id={"username"}
               type={"text"}
               variant={"outlined"}
@@ -28,6 +62,7 @@ export default function SignIn() {
           <FormControl>
             <FormLabel htmlFor={"password"}>Password</FormLabel>
             <TextField
+              error={passwordError}
               id={"password"}
               type={"password"}
               variant={"outlined"}
@@ -37,7 +72,7 @@ export default function SignIn() {
               placeholder="••••••"
             />
           </FormControl>
-          <Button variant={"contained"} type={"submit"}>Sign In</Button>
+          <Button variant={"contained"} type={"submit"} onClick={handleSubmit}>Sign In</Button>
           <Divider>or</Divider>
           <Button component={Link} to={"/signup"} variant={"outlined"}>Sign Up</Button>
         </Box>

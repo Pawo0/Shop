@@ -46,7 +46,7 @@ export default function Reviews({product}: { product: ProductsInterface | null }
     else setRatingError(false);
     if (comment.length < 3) setCommentError(true);
     else setCommentError(false);
-    if (!rating || !comment) return;
+    if (!rating || comment.length < 3) return;
 
     fetch(`http://localhost:5000/api/reviews/add`, {
       method: "POST",
