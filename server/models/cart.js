@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 
 const cartSchema = new mongoose.Schema({
     user:{
-        userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
         username: { type: String, required: true },
         firstName: { type: String},
         lastName: { type: String },
@@ -14,7 +14,7 @@ const cartSchema = new mongoose.Schema({
         discountPercentage: { type: Number },
     }],
     total: { type: Number, required: true },
-    discountedTotal: { type: Number, required: true },
+    discountedTotal: { type: Number },
     totalProducts: { type: Number, required: true },
     totalQuantity: { type: Number, required: true },
 }, { timestamps: true });
