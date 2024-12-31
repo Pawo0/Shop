@@ -43,14 +43,14 @@ export default function HeaderFirstPart() {
     </Box>
 
     <Box sx={{display: "flex"}}>
-      <IconButton sx={{position: "relative"}}>
+      <IconButton component={Link} to={"/favorites"}>
         {
           favoriteCnt > 0 ?
             <Badge badgeContent={favoriteCnt} color={"secondary"}><Favorite/></Badge> :
             <FavoriteBorder/>
         }
       </IconButton>
-      <IconButton>
+      <IconButton component={Link} to={"/cart"}>
         {
           cartCnt > 0 ?
             <Badge badgeContent={cartCnt} color={"secondary"}><ShoppingCart/></Badge> :

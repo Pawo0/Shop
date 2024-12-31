@@ -10,6 +10,8 @@ import SignIn from "./components/SignIn.tsx";
 import SignUp from "./components/SignUp.tsx";
 import {AuthProvider} from "./contexts/AuthContext.tsx";
 import User from "./pages/User.tsx";
+import Cart from "./pages/Cart.tsx";
+import Favorites from "./pages/Favorites.tsx";
 
 function App() {
 
@@ -26,6 +28,8 @@ function App() {
                 <Route path={"/signin"} element={<SignIn/>}/>
                 <Route path={"/signup"} element={<SignUp/>}/>
                 <Route path={"/user"} element={<User />}/>
+                <Route path={"/cart"} element={<Cart />} />
+                <Route path={"/favorites"} element={<Favorites />} />
                 <Route path={"*"} element={<h1>Not Found</h1>}/>
               </Route>
             </Routes>
