@@ -12,6 +12,15 @@ export interface ProductsInterface {
   thumbnail: string;
   stock: number;
   reviews: ReviewInterface[];
+  returnPolicy: string;
+  shippingInformation: string;
+  availabilityStatus: string;
+  weight: number;
+  dimensions: {
+    width: number;
+    height: number;
+    depth: number;
+  };
 }
 
 export interface ReviewInterface {
@@ -26,6 +35,8 @@ export interface ReviewInterface {
   rating: number;
   comment: string;
   date: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 

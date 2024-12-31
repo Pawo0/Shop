@@ -7,8 +7,6 @@ import {
   CardHeader,
   Divider,
   Grid2,
-  Rating,
-  TextField,
   Typography
 } from "@mui/material";
 import {ProductsInterface} from "../interfaces.tsx";
@@ -18,6 +16,7 @@ import AddReview from "./AddReview.tsx";
 import ReviewButtons from "./ReviewButtons.tsx";
 import {AuthContext} from "../contexts/AuthContext.tsx";
 import {Link} from "react-router-dom";
+import ReviewBlock from "./ReviewBlock.tsx";
 
 export default function Reviews({product}: { product: ProductsInterface | null }) {
   const [rating, setRating] = useState<number>(0);
@@ -99,7 +98,8 @@ export default function Reviews({product}: { product: ProductsInterface | null }
           setReviews(reviews.map(review => review._id === reviewId ? {
             ...review,
             comment: editingComment,
-            rating: editingRating
+            rating: editingRating,
+            updatedAt: data.review.updatedAt
           } : review));
           setEditingReviewId(null);
           setEditingComment("");
@@ -154,28 +154,11 @@ export default function Reviews({product}: { product: ProductsInterface | null }
                   borderRadius: 4
                 }}>
                   <Avatar>{review.user.username.charAt(0)}</Avatar>
-                  <Box sx={{ml: 2, flex: 1}}>
-                    <Typography variant="body2" color="textSecondary">{review.user.username}</Typography>
-                    <Rating value={editingReviewId === review._id ? editingRating : review.rating}
-                            readOnly={!(editingReviewId === review._id)}
-                            onChange={(_, val) => {
-                              console.log("change", val);
-                              if (val) setEditingRating(val)
-                            }
-                            }/>
-                    {editingReviewId === review._id ? (
-                      <TextField
-                        fullWidth
-                        multiline
-                        rows={2}
-                        value={editingComment}
-                        onChange={(e) => setEditingComment(e.target.value)}
-                      />
-                    ) : (
-                      <Typography variant="body1">{review.comment}</Typography>
-                    )}
-                    <Typography variant="caption" color="textSecondary">{review.date}</Typography>
-                  </Box>
+
+                  <ReviewBlock review={review} editingReviewId={editingReviewId} editingRating={editingRating}
+                               setEditingRating={setEditingRating} editingComment={editingComment}
+                               setEditingComment={setEditingComment}/>
+
                   <ReviewButtons review={review} userId={userId} role={role} editingReviewId={editingReviewId}
                                  deletingReviewId={deletingReviewId}
                                  setDeletingReviewId={setDeletingReviewId} handleSaveClick={handleSaveClick}
@@ -193,14 +176,10 @@ export default function Reviews({product}: { product: ProductsInterface | null }
                          commentError={commentError} handleRatingChange={handleRatingChange}
                          handleSubmit={handleSubmit}/> :
               <Box sx={{p: 2}}>
-                {/*<Typography variant="h6" sx={{textAlign: "center"}}>*/}
-                {/*  <Typography component={Link} variant="h6" to={"/signin"} color={"secondary"}*/}
-                {/*              sx={{textDecoration: "none"}}>Login</Typography> to add a review*/}
-                {/*</Typography>*/}
-                <Alert severity="info" >
+                <Alert severity="info">
                   <AlertTitle>Info</AlertTitle>
                   <Typography variant="body1">
-                    <Link to={`/signin?redirect=/product/${product?._id}`} >Login</Link>, to add a comment.
+                    <Link to={`/signin?redirect=/product/${product?._id}`}>Login</Link>, to add a comment.
                   </Typography>
                 </Alert>
               </Box>

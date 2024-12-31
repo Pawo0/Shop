@@ -51,7 +51,7 @@ export default function ProductCard(props: { product?: ProductsInterface, empty?
 
         </CardContent>
         <Box sx={{p: 2, textAlign: "center"}}>
-          <Button variant="contained" color="primary" onClick={handleButtonClick}>
+          <Button variant="contained" color="primary" onClick={handleButtonClick} disabled={product.stock <= 0}>
             Add to cart
           </Button>
         </Box>
