@@ -28,6 +28,8 @@ export default function Reviews({product}: { product: ProductsInterface | null }
   const [editingComment, setEditingComment] = useState<string>("");
   const [editingRating, setEditingRating] = useState<number>(0);
   const [deletingReviewId, setDeletingReviewId] = useState<string | null>(null);
+  const [reviewAdded, setReviewAdded] = useState<boolean>(false)
+
 
   const authContext = useContext(AuthContext)
   const {userId, username, role} = authContext!
@@ -130,6 +132,7 @@ export default function Reviews({product}: { product: ProductsInterface | null }
         console.log(data);
         if (data.success) {
           setReviews(reviews.filter(review => review._id !== reviewId));
+          setReviewAdded(false);
         }
       });
   }
@@ -141,37 +144,42 @@ export default function Reviews({product}: { product: ProductsInterface | null }
             <CardHeader title={<>Reviews <ReviewsOutlined/></>}/>
             <Divider/>
             <CardContent>
-              {reviews.map((review, idx) => (
-                <Box key={idx} sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  mb: 2,
-                  '&:hover': {
-                    backgroundColor: "#f0f0f0"
-                  },
-                  padding: "5px 16px",
-                  cursor: "pointer",
-                  borderRadius: 4
-                }}>
-                  <Avatar>{review.user.username.charAt(0)}</Avatar>
+              {reviews.map((review, idx) => {
+                if (review.user.userId === userId && !reviewAdded) {
+                  setReviewAdded(true)
+                }
+                return (
+                  <Box key={idx} sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    mb: 2,
+                    '&:hover': {
+                      backgroundColor: "#f0f0f0"
+                    },
+                    padding: "5px 16px",
+                    cursor: "pointer",
+                    borderRadius: 4
+                  }}>
+                    <Avatar>{review.user.username.charAt(0)}</Avatar>
 
-                  <ReviewBlock review={review} editingReviewId={editingReviewId} editingRating={editingRating}
-                               setEditingRating={setEditingRating} editingComment={editingComment}
-                               setEditingComment={setEditingComment}/>
+                    <ReviewBlock review={review} editingReviewId={editingReviewId} editingRating={editingRating}
+                                 setEditingRating={setEditingRating} editingComment={editingComment}
+                                 setEditingComment={setEditingComment}/>
 
-                  <ReviewButtons review={review} userId={userId} role={role} editingReviewId={editingReviewId}
-                                 deletingReviewId={deletingReviewId}
-                                 setDeletingReviewId={setDeletingReviewId} handleSaveClick={handleSaveClick}
-                                 handleEditClick={handleEditClick} handleDiscardClick={handleDiscardClick}
-                                 handleDeleteClick={handleDeleteClick}
-                                 handleConfirmDeleteClick={handleConfirmDeleteClick}/>
+                    <ReviewButtons review={review} userId={userId} role={role} editingReviewId={editingReviewId}
+                                   deletingReviewId={deletingReviewId}
+                                   setDeletingReviewId={setDeletingReviewId} handleSaveClick={handleSaveClick}
+                                   handleEditClick={handleEditClick} handleDiscardClick={handleDiscardClick}
+                                   handleDeleteClick={handleDeleteClick}
+                                   handleConfirmDeleteClick={handleConfirmDeleteClick}/>
 
-                </Box>
-              ))}
+                  </Box>
+                )
+              })}
             </CardContent>
             <Divider/>
           {
-            userId !== "" ?
+            (userId !== "" && !reviewAdded) ?
               <AddReview rating={rating} comment={comment} setComment={setComment} ratingError={ratingError}
                          commentError={commentError} handleRatingChange={handleRatingChange}
                          handleSubmit={handleSubmit}/> :
@@ -179,7 +187,11 @@ export default function Reviews({product}: { product: ProductsInterface | null }
                 <Alert severity="info">
                   <AlertTitle>Info</AlertTitle>
                   <Typography variant="body1">
-                    <Link to={`/signin?redirect=/product/${product?._id}`}>Login</Link>, to add a comment.
+                    {
+                      reviewAdded ?
+                        "You have already added a review for this product." :
+                        <><Link to={`/signin?redirect=/product/${product?._id}`}>Login</Link>, to add a comment.</>
+                    }
                   </Typography>
                 </Alert>
               </Box>
