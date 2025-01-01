@@ -23,6 +23,14 @@ export interface ProductsInterface {
   };
 }
 
+export interface CartInterface {
+  productId: string;
+  title: string;
+  price: number;
+  thumbnail: string;
+  quantity: number;
+}
+
 export interface ReviewInterface {
   _id: string;
   productId: string;

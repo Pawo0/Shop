@@ -20,6 +20,9 @@ export default function HeaderFirstPart() {
   const authContext = useContext(AuthContext)
   const {username} = authContext!
 
+
+
+
   return (<Toolbar sx={{bgcolor: "primary.light", display: "flex", justifyContent: "space-between"}}>
     <Button component={Link} to={"/"} sx={{color: "black"}} disableRipple>
       <Typography variant={"h1"} component={"div"}>
