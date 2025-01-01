@@ -36,10 +36,7 @@ const addProductToCart = async (req, res) => {
             products: [{
                 productId: productId,
                 quantity: quantity,
-                price: product.price,
-                discountPercentage: product.discountPercentage
             }],
-            total: product.price * quantity,
             totalProducts: 1,
             totalQuantity: quantity
         })
@@ -55,16 +52,12 @@ const addProductToCart = async (req, res) => {
 
     if (productIndex !== -1) {
         cart.products[productIndex].quantity += quantity
-        cart.total += product.price * quantity
         cart.totalQuantity += quantity
     } else {
         cart.products.push({
             productId: productId,
             quantity: quantity,
-            price: product.price,
-            discountPercentage: product.discountPercentage
         })
-        cart.total += product.price * quantity
         cart.totalQuantity += quantity
         cart.totalProducts += 1
     }
@@ -94,7 +87,6 @@ const removeProductFromCart = async (req, res) => {
         return res.status(400).json({message: 'Quantity exceeds available quantity', success: false})
     }
     cart.products[productIndex].quantity -= quantity
-    cart.total -= product.price * quantity
     cart.totalQuantity -= quantity
     if (cart.products[productIndex].quantity === 0) {
         cart.products.splice(productIndex, 1)
@@ -112,7 +104,6 @@ const updateCart = async (req, res) => {
         return res.status(404).json({message: 'Cart not found', success: false})
     }
     cart.products = products
-    cart.total = products.reduce((acc, el) => acc + el.price * el.quantity, 0)
     cart.totalQuantity = products.reduce((acc, el) => acc + el.quantity, 0)
     cart.totalProducts = products.length
     await cart.save()
@@ -131,7 +122,6 @@ const addCart = async (req,res) => {
             username: username
         },
         products: products,
-        total: products.reduce((acc, el) => acc + el.price * el.quantity, 0),
         totalProducts: products.length,
         totalQuantity: products.reduce((acc, el) => acc + el.quantity, 0)
     })

@@ -65,12 +65,9 @@ const insertCartsToDatabase = async (carts) => {
                     return {
                         productId: currProduct._id,
                         quantity: product.quantity,
-                        price: product.price,
-                        discountPercentage: product.discountPercentage
                     }
                 })
                 ,
-                total: cart.total,
                 discountedTotal: cart.discountedTotal,
                 totalProducts: cart.totalProducts,
                 totalQuantity: cart.totalQuantity,
