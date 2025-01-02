@@ -11,6 +11,10 @@ import {
 } from "@mui/material";
 import {Add, Remove} from "@mui/icons-material";
 import {ProductsInterface} from "../interfaces.tsx";
+import {useNavigate} from "react-router-dom";
+import React, {useContext} from "react";
+import {AuthContext} from "../contexts/AuthContext.tsx";
+import {ShoppingContext} from "../contexts/ShoppingContext.tsx";
 
 export default function ProductDetails({size, product, loading, notFound, quantity, handleDecrease, handleIncrease}: {
   size: number,
@@ -21,6 +25,25 @@ export default function ProductDetails({size, product, loading, notFound, quanti
   handleDecrease: () => void,
   handleIncrease: () => void
 }) {
+
+  const navigate = useNavigate()
+
+  const authContext = useContext(AuthContext)!
+  const {userId} = authContext
+
+  const shoppingContext = useContext(ShoppingContext)!
+  const {addProduct} = shoppingContext
+
+
+  const handleButtonClick = (productId: string) => {
+    if (userId) {
+      addProduct(productId)
+    }
+    else{
+      navigate(`/signin?redirect=/product/${productId}`)
+    }
+  }
+
   return (
     <Grid2 size={size}>
       <Card>
@@ -56,7 +79,8 @@ export default function ProductDetails({size, product, loading, notFound, quanti
                   </Typography>
                 </Box>
                 <Button variant="contained" color="secondary" fullWidth
-                        disabled={product.stock === 0}>
+                        disabled={product.stock === 0}
+                        onClick={()=>handleButtonClick(product._id)}>
                   Add to cart
                 </Button>
               </Box>

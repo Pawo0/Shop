@@ -1,19 +1,35 @@
 import {Box, Button, Card, CardContent, CardMedia, CircularProgress, Divider, Typography} from "@mui/material";
 import {ProductsInterface} from "../interfaces.tsx"
 import {useNavigate} from "react-router-dom";
-import React from "react";
+import React, {useContext} from "react";
+import {ShoppingContext} from "../contexts/ShoppingContext.tsx";
+import {AuthContext} from "../contexts/AuthContext.tsx";
 
 export default function ProductCard(props: { product?: ProductsInterface, empty?: boolean }) {
   const {product} = props
   const navigate = useNavigate()
 
+  const authContext = useContext(AuthContext)!
+  const {userId} = authContext
+
+  const shoppingContext = useContext(ShoppingContext)!
+  const {addProduct} = shoppingContext
+
+
+  const handleButtonClick = (e: React.MouseEvent, productId: string) => {
+    e.stopPropagation()
+    if (userId) {
+      addProduct(productId)
+    }
+    else{
+      navigate(`/signin?redirect=/product/${productId}`)
+    }
+  }
+
   const handleCardClick = () => {
     if (product) {
       navigate(`/product/${product._id}`)
     }
-  }
-  const handleButtonClick = (e: React.MouseEvent) => {
-    e.stopPropagation()
   }
 
   if (product) {
@@ -51,7 +67,8 @@ export default function ProductCard(props: { product?: ProductsInterface, empty?
 
         </CardContent>
         <Box sx={{p: 2, textAlign: "center"}}>
-          <Button variant="contained" color="primary" onClick={handleButtonClick} disabled={product.stock <= 0}>
+          <Button variant="contained" color="primary" onClick={(e) => handleButtonClick(e, product._id)}
+                  disabled={product.stock <= 0}>
             Add to cart
           </Button>
         </Box>

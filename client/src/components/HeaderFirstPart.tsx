@@ -15,7 +15,7 @@ import {AuthContext} from "../contexts/AuthContext.tsx";
 
 export default function HeaderFirstPart() {
   const shoppingContext = useContext(ShoppingContext)
-  const {favoriteCnt, cartCnt} = shoppingContext!
+  const {favoriteCnt, cartTotalQuantity} = shoppingContext!
 
   const authContext = useContext(AuthContext)
   const {username} = authContext!
@@ -45,7 +45,7 @@ export default function HeaderFirstPart() {
 
     </Box>
 
-    <Box sx={{display: "flex"}}>
+    <Box sx={{display: "flex", gap:1}}>
       <IconButton component={Link} to={"/favorites"}>
         {
           favoriteCnt > 0 ?
@@ -55,8 +55,8 @@ export default function HeaderFirstPart() {
       </IconButton>
       <IconButton component={Link} to={"/cart"}>
         {
-          cartCnt > 0 ?
-            <Badge badgeContent={cartCnt} color={"secondary"}><ShoppingCart/></Badge> :
+          cartTotalQuantity > 0 ?
+            <Badge badgeContent={cartTotalQuantity} color={"secondary"}><ShoppingCart/></Badge> :
             <ShoppingCartOutlined/>
         }
       </IconButton>{username ?
