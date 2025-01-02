@@ -1,8 +1,8 @@
-import {createContext, ReactNode, useState} from "react";
+import {createContext, Dispatch, ReactNode, SetStateAction, useState} from "react";
 
 interface SearchContextProps{
   searchQuery: string;
-  setSearchQuery: (search: string) => void;
+  setSearchQuery: Dispatch<SetStateAction<string>>;
 }
 
 export const SearchContext = createContext<SearchContextProps | undefined>(undefined)

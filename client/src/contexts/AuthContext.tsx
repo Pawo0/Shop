@@ -1,9 +1,9 @@
-import {createContext, ReactNode, useEffect, useState} from "react";
+import {createContext, Dispatch, ReactNode, SetStateAction, useEffect, useState} from "react";
 import {jwtDecode} from "jwt-decode";
 
 interface AuthContext {
   token: string;
-  setToken: (token: string) => void;
+  setToken: Dispatch<SetStateAction<string>>;
   username: string;
   role: string;
   userId: string;
