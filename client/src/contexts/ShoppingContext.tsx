@@ -14,10 +14,10 @@ interface ShoppingContextProps {
   setFavoriteCnt: Dispatch<SetStateAction<number>>;
   cart: CartInterface[];
   setCart: Dispatch<SetStateAction<CartInterface[]>>;
-  decreaseQuantity: (productId: string) => void;
-  increaseQuantity: (productId: string) => void;
   deleteProduct: (productId: string) => void;
-  addProduct: (productId: string) => void;
+  decreaseQuantity: (productId: string, by?: number) => void;
+  increaseQuantity: (productId: string, by?: number) => void
+  addProduct: (productId: string, how_many?: number) => void;
 }
 
 export const ShoppingContext = createContext<ShoppingContextProps | undefined>(undefined);
@@ -32,15 +32,17 @@ export const ShoppingProvider = ({children}: { children: React.ReactNode }) => {
 
   const {userId} = useContext(AuthContext)!;
 
-  const decreaseQuantity = (productId: string) => {
+  const decreaseQuantity = (productId: string, by = 1) => {
+    let how_many = 1;
     setCart((prevCart) => {
       return prevCart.reduce((acc: CartInterface[], product: CartInterface) => {
         if (product.productId === productId) {
-          setCartTotalPrice(prevState => prevState - product.price);
-          if (product.quantity > 1) {
-            acc.push({...product, quantity: product.quantity - 1});
+          how_many = Math.min(product.quantity, by);
+          setCartTotalPrice(prevState => prevState - (product.price * how_many));
+          if (product.quantity > by) {
+            acc.push({...product, quantity: product.quantity - how_many});
           } else {
-            setCartTotalProducts(prevState => prevState - 1);
+            setCartTotalProducts(prevState => prevState - how_many);
           }
         } else {
           acc.push(product);
@@ -49,15 +51,15 @@ export const ShoppingProvider = ({children}: { children: React.ReactNode }) => {
       }, []);
     });
 
-    setCartTotalQuantity(prevState => prevState - 1);
+    setCartTotalQuantity(prevState => prevState - how_many);
   }
 
-  const increaseQuantity = (productId: string) => {
+  const increaseQuantity = (productId: string, by = 1) => {
     setCart((prevCart) => {
       return prevCart.reduce((acc: CartInterface[], product: CartInterface) => {
         if (product.productId === productId) {
-          setCartTotalPrice(prevState => prevState + product.price);
-          acc.push({...product, quantity: product.quantity + 1});
+          setCartTotalPrice(prevState => prevState + (product.price * by));
+          acc.push({...product, quantity: product.quantity + by});
         } else {
           acc.push(product);
         }
@@ -65,7 +67,7 @@ export const ShoppingProvider = ({children}: { children: React.ReactNode }) => {
       }, []);
     });
 
-    setCartTotalQuantity(prevState => prevState + 1);
+    setCartTotalQuantity(prevState => prevState + by);
   }
 
   const deleteProduct = (productId: string) => {
@@ -83,9 +85,9 @@ export const ShoppingProvider = ({children}: { children: React.ReactNode }) => {
     });
   }
 
-  const addProduct = (productId: string) => {
+  const addProduct = (productId: string, how_many : number = 1) => {
     if (cart.find(product => product.productId === productId)) {
-      increaseQuantity(productId);
+      increaseQuantity(productId, how_many);
     } else{
       fetch(`http://localhost:5000/api/products/${productId}`)
         .then(res => res.json())
@@ -96,12 +98,12 @@ export const ShoppingProvider = ({children}: { children: React.ReactNode }) => {
               title: data.product.title,
               price: data.product.price,
               thumbnail: data.product.thumbnail,
-              quantity: 1
+              quantity: how_many
             }]
           });
-          setCartTotalPrice(prevState => prevState + data.product.price);
+          setCartTotalPrice(prevState => prevState + (data.product.price * how_many));
           setCartTotalProducts(prevState => prevState + 1);
-          setCartTotalQuantity(prevState => prevState + 1);
+          setCartTotalQuantity(prevState => prevState + how_many);
         })
     }
   }

@@ -12,18 +12,19 @@ import {
 import {Add, Remove} from "@mui/icons-material";
 import {ProductsInterface} from "../interfaces.tsx";
 import {useNavigate} from "react-router-dom";
-import React, {useContext} from "react";
+import {Dispatch, SetStateAction, useContext} from "react";
 import {AuthContext} from "../contexts/AuthContext.tsx";
 import {ShoppingContext} from "../contexts/ShoppingContext.tsx";
 
-export default function ProductDetails({size, product, loading, notFound, quantity, handleDecrease, handleIncrease}: {
+export default function ProductDetails({size, product, loading, notFound, quantity, handleDecrease, handleIncrease, setQuantity}: {
   size: number,
   product: ProductsInterface | null,
   loading: boolean,
   notFound: boolean,
   quantity: number,
   handleDecrease: () => void,
-  handleIncrease: () => void
+  handleIncrease: () => void,
+  setQuantity: Dispatch<SetStateAction<number>>
 }) {
 
   const navigate = useNavigate()
@@ -37,7 +38,8 @@ export default function ProductDetails({size, product, loading, notFound, quanti
 
   const handleButtonClick = (productId: string) => {
     if (userId) {
-      addProduct(productId)
+      addProduct(productId, quantity)
+      setQuantity(1)
     }
     else{
       navigate(`/signin?redirect=/product/${productId}`)

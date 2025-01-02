@@ -64,6 +64,7 @@ export default function Product() {
         quantity={quantity}
         handleDecrease={handleDecrease}
         handleIncrease={handleIncrease}
+        setQuantity={setQuantity}
       />
       <Reviews product={product}/>
     </Grid2>
