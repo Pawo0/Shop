@@ -82,7 +82,13 @@ export default function ProductDetails({size, product, loading, notFound, quanti
                 </Box>
                 <Button variant="contained" color="secondary" fullWidth
                         disabled={product.stock === 0}
-                        onClick={()=>handleButtonClick(product._id)}>
+                        onClick={()=>handleButtonClick(product._id)}
+                        sx={{
+                          '&:active' : {
+                            transform: "scale(0.95)"
+                          }
+                        }}
+                >
                   Add to cart
                 </Button>
               </Box>

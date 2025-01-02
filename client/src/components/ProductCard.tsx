@@ -67,8 +67,15 @@ export default function ProductCard(props: { product?: ProductsInterface, empty?
 
         </CardContent>
         <Box sx={{p: 2, textAlign: "center"}}>
-          <Button variant="contained" color="primary" onClick={(e) => handleButtonClick(e, product._id)}
-                  disabled={product.stock <= 0}>
+          <Button variant="contained" color="primary"
+                  onClick={(e) => handleButtonClick(e, product._id)}
+                  disabled={product.stock <= 0}
+                  sx={{
+                    '&:active': {
+                      transform: "scale(0.95)"
+                    }
+                  }}
+          >
             Add to cart
           </Button>
         </Box>
