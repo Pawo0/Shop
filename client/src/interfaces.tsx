@@ -48,3 +48,23 @@ export interface ReviewInterface {
 }
 
 
+export interface DecodedToken {
+  username: string;
+  role: string;
+  userId: string;
+}
+
+export interface UserInterface {
+  username: string;
+  role: string;
+  userId: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+}
+
+export interface EditProfileInterface {
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+}
