@@ -8,7 +8,8 @@ const {
     getUserById,
     deleteUser,
     updateUser,
-    checkIfExist
+    checkIfExist,
+    checkPassword
 } = require('../controllers/userController')
 
 router.post('/login', loginUser)
@@ -16,5 +17,6 @@ router.post('/register', registerUser)
 router.get('/', getAllUsers)
 router.route('/:id').get(getUserById).delete(deleteUser).patch(updateUser)
 router.post('/check', checkIfExist)
+router.post('/checkpassword', checkPassword)
 
 module.exports = router
