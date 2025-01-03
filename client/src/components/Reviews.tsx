@@ -14,9 +14,9 @@ import {ReviewsOutlined} from "@mui/icons-material";
 import React, {useContext, useEffect, useState} from "react";
 import AddReview from "./AddReview.tsx";
 import ReviewButtons from "./ReviewButtons.tsx";
-import {AuthContext} from "../contexts/AuthContext.tsx";
 import {Link} from "react-router-dom";
 import ReviewBlock from "./ReviewBlock.tsx";
+import {UserContext} from "../contexts/UserContext.tsx";
 
 export default function Reviews({product}: { product: ProductsInterface | null }) {
   const [rating, setRating] = useState<number>(0);
@@ -31,8 +31,8 @@ export default function Reviews({product}: { product: ProductsInterface | null }
   const [reviewAdded, setReviewAdded] = useState<boolean>(false)
 
 
-  const authContext = useContext(AuthContext)
-  const {userId, username, role} = authContext!
+  const userContext = useContext(UserContext)
+  const {userId, username, role} = userContext!
 
 
   useEffect(() => {

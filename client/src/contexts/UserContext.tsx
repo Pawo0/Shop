@@ -90,6 +90,13 @@ export const UserProvider = ({children}: { children: ReactNode }) => {
         })
         .catch(err => console.log(err))
     }
+    else{
+      setUsername("");
+      setRole("");
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+    }
   }, [userId])
 
   return (

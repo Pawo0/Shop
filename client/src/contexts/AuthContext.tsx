@@ -5,8 +5,6 @@ import {DecodedToken} from "../interfaces.tsx";
 interface AuthContext {
   token: string;
   setToken: Dispatch<SetStateAction<string>>;
-  username: string;
-  role: string;
   userId: string;
 }
 
@@ -16,26 +14,20 @@ export const AuthContext = createContext<AuthContext | null>(null)
 
 export const AuthProvider = ({children}: { children: ReactNode }) => {
   const [token, setToken] = useState(localStorage.getItem("token") || "")
-  const [username, setUsername] = useState("")
-  const [role, setRole] = useState("")
   const [userId, setUserId] = useState("")
 
   useEffect(() => {
     if (token) {
       const decoded: DecodedToken = jwtDecode(token)
-      setUsername(decoded.username)
-      setRole(decoded.role)
       setUserId(decoded.userId)
     }
     else{
-      setUsername("")
-      setRole("")
       setUserId("")
     }
   }, [token]);
 
   return (
-    <AuthContext.Provider value={{token, setToken, username, role, userId}}>
+    <AuthContext.Provider value={{token, setToken, userId}}>
       {children}
     </AuthContext.Provider>
   )

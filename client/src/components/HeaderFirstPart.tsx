@@ -10,15 +10,15 @@ import {
 import SearchBar from "./SearchBar.tsx";
 import {useContext} from "react";
 import {ShoppingContext} from "../contexts/ShoppingContext.tsx";
-import {AuthContext} from "../contexts/AuthContext.tsx";
+import {UserContext} from "../contexts/UserContext.tsx";
 
 
 export default function HeaderFirstPart() {
   const shoppingContext = useContext(ShoppingContext)
   const {favoriteCnt, cartTotalQuantity} = shoppingContext!
 
-  const authContext = useContext(AuthContext)
-  const {username} = authContext!
+  const userContext = useContext(UserContext)
+  const {username} = userContext!
 
 
 
