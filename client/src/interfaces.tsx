@@ -23,7 +23,7 @@ export interface ProductsInterface {
   };
 }
 
-export interface CartInterface {
+export interface CartProductInterface {
   productId: string;
   title: string;
   price: number;
@@ -54,18 +54,19 @@ export interface DecodedToken {
   userId: string;
 }
 
-export interface UserInterface {
-  username: string;
-  role: string;
-  userId: string;
-  email: string;
-  firstName?: string;
-  lastName?: string;
-}
 
 export interface EditProfileInterface {
   username?: string;
   email?: string;
   firstName?: string;
   lastName?: string;
+}
+
+export interface OrderHistInterface {
+  _id: string;
+  products: CartProductInterface[];
+  total: number;
+  totalQuantity: number;
+  totalProducts: number;
+  updatedAt: string;
 }

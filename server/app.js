@@ -23,7 +23,7 @@ app.use('/api/products', productRouter)
 app.use('/api/reviews', reviewRouter)
 app.use('/api/users', userRouter)
 app.use('/api/carts', cartRouter)
-app.use('/api/orderHists', orderHistRouter)
+app.use('/api/orderhist', orderHistRouter)
 
 const start = async () => {
     try {

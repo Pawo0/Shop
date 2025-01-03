@@ -1,6 +1,6 @@
 import React, {createContext, Dispatch, SetStateAction, useContext, useEffect, useState} from "react";
 import {AuthContext} from "./AuthContext.tsx";
-import {CartInterface, ProductsInterface} from "../interfaces.tsx";
+import {CartProductInterface, ProductsInterface} from "../interfaces.tsx";
 
 
 interface ShoppingContextProps {
@@ -10,32 +10,55 @@ interface ShoppingContextProps {
   setCartTotalProducts: Dispatch<SetStateAction<number>>;
   cartTotalPrice: number;
   setCartTotalPrice: Dispatch<SetStateAction<number>>;
-  favoriteCnt: number;
-  setFavoriteCnt: Dispatch<SetStateAction<number>>;
-  cart: CartInterface[];
-  setCart: Dispatch<SetStateAction<CartInterface[]>>;
+  cart: CartProductInterface[];
+  setCart: Dispatch<SetStateAction<CartProductInterface[]>>;
   deleteProduct: (productId: string) => void;
   decreaseQuantity: (productId: string, by?: number) => void;
   increaseQuantity: (productId: string, by?: number) => void
   addProduct: (productId: string, how_many?: number) => void;
+  checkoutCart: () => void;
 }
 
 export const ShoppingContext = createContext<ShoppingContextProps | undefined>(undefined);
 
 export const ShoppingProvider = ({children}: { children: React.ReactNode }) => {
-  const [favoriteCnt, setFavoriteCnt] = React.useState<number>(0);
 
-  const [cart, setCart] = useState<CartInterface[]>([])
+  const [cart, setCart] = useState<CartProductInterface[]>([])
   const [cartTotalQuantity, setCartTotalQuantity] = React.useState<number>(0);
   const [cartTotalProducts, setCartTotalProducts] = React.useState<number>(0);
   const [cartTotalPrice, setCartTotalPrice] = React.useState<number>(0);
 
   const {userId} = useContext(AuthContext)!;
 
+  const checkoutCart = () => {
+    if (!userId) {
+      console.log("Please sign in to continue");
+      return;
+    }
+    if (cart.length === 0) {
+      console.log("Cart is empty");
+      return;
+    }
+    fetch(`http://localhost:5000/api/carts/checkout/${userId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log("Order placed", data)
+        setCart([])
+        setCartTotalPrice(0)
+        setCartTotalProducts(0)
+        setCartTotalQuantity(0)
+      })
+  }
+
   const decreaseQuantity = (productId: string, by = 1) => {
     let how_many = 1;
     setCart((prevCart) => {
-      return prevCart.reduce((acc: CartInterface[], product: CartInterface) => {
+      return prevCart.reduce((acc: CartProductInterface[], product: CartProductInterface) => {
         if (product.productId === productId) {
           how_many = Math.min(product.quantity, by);
           setCartTotalPrice(prevState => prevState - (product.price * how_many));
@@ -56,7 +79,7 @@ export const ShoppingProvider = ({children}: { children: React.ReactNode }) => {
 
   const increaseQuantity = (productId: string, by = 1) => {
     setCart((prevCart) => {
-      return prevCart.reduce((acc: CartInterface[], product: CartInterface) => {
+      return prevCart.reduce((acc: CartProductInterface[], product: CartProductInterface) => {
         if (product.productId === productId) {
           setCartTotalPrice(prevState => prevState + (product.price * by));
           acc.push({...product, quantity: product.quantity + by});
@@ -72,7 +95,7 @@ export const ShoppingProvider = ({children}: { children: React.ReactNode }) => {
 
   const deleteProduct = (productId: string) => {
     setCart((prevCart) => {
-      return prevCart.reduce((acc: CartInterface[], product: CartInterface) => {
+      return prevCart.reduce((acc: CartProductInterface[], product: CartProductInterface) => {
         if (product.productId === productId) {
           setCartTotalPrice(prevState => prevState - product.price * product.quantity);
           setCartTotalProducts(prevState => prevState - 1);
@@ -178,8 +201,6 @@ export const ShoppingProvider = ({children}: { children: React.ReactNode }) => {
     <ShoppingContext.Provider value={{
       cartTotalQuantity,
       setCartTotalQuantity,
-      favoriteCnt,
-      setFavoriteCnt,
       cart,
       setCart,
       cartTotalProducts,
@@ -189,7 +210,8 @@ export const ShoppingProvider = ({children}: { children: React.ReactNode }) => {
       decreaseQuantity,
       increaseQuantity,
       deleteProduct,
-      addProduct
+      addProduct,
+      checkoutCart
     }}>
       {children}
     </ShoppingContext.Provider>

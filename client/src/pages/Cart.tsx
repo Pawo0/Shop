@@ -10,7 +10,7 @@ import CartSummary from "../components/CartSummary.tsx";
 
 export default function Cart() {
   const shoppingContext = useContext(ShoppingContext)!;
-  const {cart} = shoppingContext;
+  const {cart, checkoutCart} = shoppingContext;
 
 
   return (
@@ -24,7 +24,7 @@ export default function Cart() {
         </Grid2>
         <Grid2 size={4}>
           <CartSummary/>
-          <Button variant={"contained"} fullWidth sx={{mt: 2}}>Confirm</Button>
+          <Button variant={"contained"} onClick={checkoutCart} disabled={cart.length === 0} fullWidth sx={{mt: 2}}>Confirm</Button>
         </Grid2>
       </Grid2>
     </Container>

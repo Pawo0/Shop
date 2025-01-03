@@ -9,8 +9,13 @@ const orderHistSchema = new mongoose.Schema({
     },
     products: [{
         productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+        title: { type: String, required: true },
+        price: { type: Number, required: true },
+        thumbnail: { type: String, required: true },
         quantity: { type: Number, required: true, min: 1 },
+
     }],
+    total: { type: Number, required: true },
     discountedTotal: { type: Number },
     totalProducts: { type: Number, required: true },
     totalQuantity: { type: Number, required: true },

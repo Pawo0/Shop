@@ -11,11 +11,12 @@ import SignUp from "./components/SignUp.tsx";
 import {AuthProvider} from "./contexts/AuthContext.tsx";
 import User from "./pages/User.tsx";
 import Cart from "./pages/Cart.tsx";
-import Favorites from "./pages/Favorites.tsx";
+import OrderHist from "./pages/OrderHist.tsx";
 import {UserProvider} from "./contexts/UserContext.tsx";
 import UserDetails from "./components/UserDetails.tsx";
 import UpdateProfile from "./components/UpdateProfile.tsx";
 import ChangePassword from "./components/ChangePassword.tsx";
+import {OrderHistProvider} from "./contexts/OrderHistContext.tsx";
 
 function App() {
 
@@ -24,25 +25,27 @@ function App() {
       <UserProvider>
         <SearchProvider>
           <ShoppingProvider>
-            <BrowserRouter>
-              <Routes>
-                <Route path={"/"} element={<Layout/>}>
-                  <Route index element={<Home/>}/>
-                  <Route path={"/category/:category"} element={<Products/>}/>
-                  <Route path={"/product/:id"} element={<Product/>}/>
-                  <Route path={"/signin"} element={<SignIn/>}/>
-                  <Route path={"/signup"} element={<SignUp/>}/>
-                  <Route path={"/cart"} element={<Cart/>}/>
-                  <Route path={"/favorites"} element={<Favorites/>}/>
-                  <Route path={"/user"} element={<User/>}>
-                    <Route index element={<UserDetails />}/>
-                    <Route path={"update"} element={<UpdateProfile />}/>
-                    <Route path={"password"} element={<ChangePassword />}/>
+            <OrderHistProvider>
+              <BrowserRouter>
+                <Routes>
+                  <Route path={"/"} element={<Layout/>}>
+                    <Route index element={<Home/>}/>
+                    <Route path={"/category/:category"} element={<Products/>}/>
+                    <Route path={"/product/:id"} element={<Product/>}/>
+                    <Route path={"/signin"} element={<SignIn/>}/>
+                    <Route path={"/signup"} element={<SignUp/>}/>
+                    <Route path={"/cart"} element={<Cart/>}/>
+                    <Route path={"/orderhist"} element={<OrderHist/>}/>
+                    <Route path={"/user"} element={<User/>}>
+                      <Route index element={<UserDetails/>}/>
+                      <Route path={"update"} element={<UpdateProfile/>}/>
+                      <Route path={"password"} element={<ChangePassword/>}/>
+                    </Route>
+                    <Route path={"*"} element={<h1>Not Found</h1>}/>
                   </Route>
-                  <Route path={"*"} element={<h1>Not Found</h1>}/>
-                </Route>
-              </Routes>
-            </BrowserRouter>
+                </Routes>
+              </BrowserRouter>
+            </OrderHistProvider>
           </ShoppingProvider>
         </SearchProvider>
       </UserProvider>

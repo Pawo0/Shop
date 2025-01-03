@@ -2,8 +2,7 @@ import {Badge, Box, Button, IconButton, Toolbar, Typography} from "@mui/material
 import {Link} from "react-router-dom";
 import {
   AccountBoxOutlined,
-  Favorite,
-  FavoriteBorder,
+  ReceiptLong,
   ShoppingCart,
   ShoppingCartOutlined
 } from "@mui/icons-material";
@@ -15,12 +14,10 @@ import {UserContext} from "../contexts/UserContext.tsx";
 
 export default function HeaderFirstPart() {
   const shoppingContext = useContext(ShoppingContext)
-  const {favoriteCnt, cartTotalQuantity} = shoppingContext!
+  const {cartTotalQuantity} = shoppingContext!
 
   const userContext = useContext(UserContext)
   const {username} = userContext!
-
-
 
 
   return (<Toolbar sx={{bgcolor: "primary.light", display: "flex", justifyContent: "space-between"}}>
@@ -45,15 +42,11 @@ export default function HeaderFirstPart() {
 
     </Box>
 
-    <Box sx={{display: "flex", gap:1}}>
-      <IconButton component={Link} to={"/favorites"}>
-        {
-          favoriteCnt > 0 ?
-            <Badge badgeContent={favoriteCnt} color={"secondary"}><Favorite/></Badge> :
-            <FavoriteBorder/>
-        }
+    <Box sx={{display: "flex", gap: 1}}>
+      <IconButton component={Link} to={username ? "/orderhist" : "/signin?redirect=/orderhist"}>
+        <ReceiptLong/>
       </IconButton>
-      <IconButton component={Link} to={"/cart"}>
+      <IconButton component={Link} to={username ? "/cart" : "/signin?redirect=/cart"}>
         {
           cartTotalQuantity > 0 ?
             <Badge badgeContent={cartTotalQuantity} color={"secondary"}><ShoppingCart/></Badge> :
