@@ -7,12 +7,14 @@ const {
     getAllUsers,
     getUserById,
     deleteUser,
-    updateUser
+    updateUser,
+    checkIfExist
 } = require('../controllers/userController')
 
 router.post('/login', loginUser)
 router.post('/register', registerUser)
 router.get('/', getAllUsers)
 router.route('/:id').get(getUserById).delete(deleteUser).patch(updateUser)
+router.post('/check', checkIfExist)
 
 module.exports = router

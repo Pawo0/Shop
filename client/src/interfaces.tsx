@@ -64,6 +64,7 @@ export interface UserInterface {
 }
 
 export interface EditProfileInterface {
+  username?: string;
   email?: string;
   firstName?: string;
   lastName?: string;

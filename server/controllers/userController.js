@@ -81,11 +81,31 @@ const updateUser = async (req, res) => {
         res.status(404).json({message: 'User not found', success: false})
     }
 }
+
+const checkIfExist = async (req, res) => {
+    const {username, email} = req.body
+    const users = await User.find({$or: [{username}, {email}]})
+    let usernameExist = false
+    let emailExist = false
+    if (users.length) {
+        for (let user of users) {
+            if (user.username === username) {
+                usernameExist = true
+            }
+            if (user.email === email) {
+                emailExist = true
+            }
+        }
+
+    }
+    return res.status(200).json({success: true,usernameExist, emailExist})
+}
 module.exports = {
     loginUser,
     registerUser,
     getAllUsers,
     getUserById,
     deleteUser,
-    updateUser
+    updateUser,
+    checkIfExist
 }
