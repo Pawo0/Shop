@@ -17,11 +17,13 @@ const productRouter = require('./routes/productRoute')
 const reviewRouter = require('./routes/reviewRoute')
 const userRouter = require('./routes/userRoute')
 const cartRouter = require('./routes/cartRoute')
+const orderHistRouter = require('./routes/orderHistRoute')
 
 app.use('/api/products', productRouter)
 app.use('/api/reviews', reviewRouter)
 app.use('/api/users', userRouter)
 app.use('/api/carts', cartRouter)
+app.use('/api/orderHists', orderHistRouter)
 
 const start = async () => {
     try {

@@ -1,5 +1,7 @@
 const Cart = require('../models/cart')
 const Product = require('../models/product')
+const OrderHist = require('../models/orderHist')
+const User = require('../models/user')
 
 const getCart = async (req, res) => {
     const {userId} = req.params
@@ -101,7 +103,21 @@ const updateCart = async (req, res) => {
     const {products} = req.body
     const cart = await Cart.findOne({'user.userId': userId})
     if (!cart) {
-        return res.status(404).json({message: 'Cart not found', success: false})
+        const user = await User.findById(userId)
+        if (!user) {
+            return res.status(404).json({message: 'User not found', success: false})
+        }
+        const newCart = new Cart({
+            user: {
+                userId: userId,
+                username: user.username
+            },
+            products: products,
+            totalProducts: products.length,
+            totalQuantity: products.reduce((acc, el) => acc + el.quantity, 0)
+        })
+        await newCart.save()
+        return res.status(201).json({newCart, success: true})
     }
     cart.products = products
     cart.totalQuantity = products.reduce((acc, el) => acc + el.quantity, 0)
@@ -138,6 +154,26 @@ const deleteCart = async (req, res) => {
     return res.status(200).json({deletedCart, success: true})
 }
 
+const checkoutCart = async (req, res) => {
+    const {userId} = req.params
+    const cart = await Cart.findOne({'user.userId': userId})
+    if (!cart) {
+        return res.status(404).json({message: 'Cart not found', success: false})
+    }
+    const newOrderHist = new OrderHist({
+        user: cart.user,
+        products: cart.products,
+        discountedTotal: cart.discountedTotal,
+        totalProducts: cart.totalProducts,
+        totalQuantity: cart.totalQuantity
+    })
+
+    await newOrderHist.save()
+    await Cart.findOneAndDelete({'user.userId': userId})
+
+    res.status(201).json({newOrderHist, success: true})
+}
+
 
 
 
@@ -148,5 +184,6 @@ module.exports = {
     removeProductFromCart,
     deleteCart,
     updateCart,
-    addCart
+    addCart,
+    checkoutCart
 }

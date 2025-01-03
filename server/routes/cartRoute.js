@@ -8,7 +8,8 @@ const {
     removeProductFromCart,
     deleteCart,
     updateCart,
-    addCart
+    addCart,
+    checkoutCart
 } = require('../controllers/cartController');
 
 router.get('/', getAllCarts);
@@ -18,5 +19,6 @@ router.patch('/add', addProductToCart);
 router.patch('/remove', removeProductFromCart);
 router.put('/update/:userId', updateCart);
 router.post('/add', addCart);
+router.post('/checkout/:userId', checkoutCart);
 
 module.exports = router;
