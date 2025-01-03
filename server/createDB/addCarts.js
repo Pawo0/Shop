@@ -71,6 +71,7 @@ const insertCartsToDatabase = async (carts) => {
                 discountedTotal: cart.discountedTotal,
                 totalProducts: cart.totalProducts,
                 totalQuantity: cart.totalQuantity,
+                total: cart.total
             }
         }).filter(cart => cart != null);
 

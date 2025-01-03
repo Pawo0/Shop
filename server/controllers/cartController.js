@@ -3,6 +3,8 @@ const Product = require('../models/product')
 const OrderHist = require('../models/orderHist')
 const User = require('../models/user')
 
+// todo dodany total do cart
+
 const getCart = async (req, res) => {
     const {userId} = req.params
     const cart = await Cart.findOne({'user.userId': userId})
@@ -40,7 +42,8 @@ const addProductToCart = async (req, res) => {
                 quantity: quantity,
             }],
             totalProducts: 1,
-            totalQuantity: quantity
+            totalQuantity: quantity,
+            total: product.price * quantity
         })
         await newCart.save()
         return res.status(201).json({cart: newCart, success: true})
@@ -55,6 +58,7 @@ const addProductToCart = async (req, res) => {
     if (productIndex !== -1) {
         cart.products[productIndex].quantity += quantity
         cart.totalQuantity += quantity
+        cart.total += product.price * quantity
     } else {
         cart.products.push({
             productId: productId,
@@ -62,6 +66,7 @@ const addProductToCart = async (req, res) => {
         })
         cart.totalQuantity += quantity
         cart.totalProducts += 1
+        cart.total += product.price
     }
     await cart.save()
     return res.status(200).json({cart, success: true})
@@ -90,6 +95,7 @@ const removeProductFromCart = async (req, res) => {
     }
     cart.products[productIndex].quantity -= quantity
     cart.totalQuantity -= quantity
+    cart.total -= product.price * quantity
     if (cart.products[productIndex].quantity === 0) {
         cart.products.splice(productIndex, 1)
         cart.totalProducts -= 1
@@ -114,7 +120,8 @@ const updateCart = async (req, res) => {
             },
             products: products,
             totalProducts: products.length,
-            totalQuantity: products.reduce((acc, el) => acc + el.quantity, 0)
+            totalQuantity: products.reduce((acc, el) => acc + el.quantity, 0),
+            total: products.reduce((acc, el) => acc + el.price * el.quantity, 0)
         })
         await newCart.save()
         return res.status(201).json({newCart, success: true})
@@ -122,6 +129,7 @@ const updateCart = async (req, res) => {
     cart.products = products
     cart.totalQuantity = products.reduce((acc, el) => acc + el.quantity, 0)
     cart.totalProducts = products.length
+    cart.total = products.reduce((acc, el) => acc + el.price * el.quantity, 0)
     await cart.save()
     return res.status(200).json({cart, success: true})
 }
@@ -139,7 +147,8 @@ const addCart = async (req,res) => {
         },
         products: products,
         totalProducts: products.length,
-        totalQuantity: products.reduce((acc, el) => acc + el.quantity, 0)
+        totalQuantity: products.reduce((acc, el) => acc + el.quantity, 0),
+        total: products.reduce((acc, el) => acc + el.price * el.quantity, 0)
     })
     await newCart.save()
     return res.status(201).json({newCart, success: true})
@@ -155,25 +164,36 @@ const deleteCart = async (req, res) => {
 }
 
 const checkoutCart = async (req, res) => {
-    const {userId} = req.params
-    const cart = await Cart.findOne({'user.userId': userId})
+    const {userId} = req.params;
+    const cart = await Cart.findOne({'user.userId': userId});
     if (!cart) {
-        return res.status(404).json({message: 'Cart not found', success: false})
+        return res.status(404).json({message: 'Cart not found', success: false});
     }
+
+    const products = await Promise.all(cart.products.map(async el => {
+        const product = await Product.findById(el.productId);
+        return {
+            productId: el.productId,
+            title: product.title,
+            price: product.price,
+            thumbnail: product.thumbnail,
+            quantity: el.quantity
+        };
+    }));
     const newOrderHist = new OrderHist({
         user: cart.user,
-        products: cart.products,
+        products: products,
         discountedTotal: cart.discountedTotal,
         totalProducts: cart.totalProducts,
-        totalQuantity: cart.totalQuantity
-    })
+        totalQuantity: cart.totalQuantity,
+        total: cart.total
+    });
 
-    await newOrderHist.save()
-    await Cart.findOneAndDelete({'user.userId': userId})
+    await newOrderHist.save();
+    await Cart.findOneAndDelete({'user.userId': userId});
 
-    res.status(201).json({newOrderHist, success: true})
-}
-
+    res.status(201).json({newOrderHist, success: true});
+};
 
 
 

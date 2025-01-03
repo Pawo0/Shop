@@ -14,6 +14,8 @@ const cartSchema = new mongoose.Schema({
     discountedTotal: { type: Number },
     totalProducts: { type: Number, required: true },
     totalQuantity: { type: Number, required: true },
+//     todo sprawdz gdzie mozna bezposrednio sprawdzic total
+    total: { type: Number, required: true },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Cart', cartSchema);
