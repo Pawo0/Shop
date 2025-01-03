@@ -14,8 +14,9 @@ export default function Home() {
         padding: "24px 0"
       }}
     >
-      <ProductCarousel products={"http://localhost:5000/api/products?limit=8"} title={"Currently hot"}/>
-      <ProductCarousel products={"http://localhost:5000/api/products?limit=8&category=groceries"} title={"NOT  hot"}/>
+      <ProductCarousel products={"http://localhost:5000/api/products?limit=16&lowStock=true"} title={"Low stock"}/>
+      <ProductCarousel products={"http://localhost:5000/api/products?limit=16&rating=4.9"} title={"Best rated"}/>
+      <ProductCarousel products={"http://localhost:5000/api/products?limit=16&maxWeight=1"} title={"Under 1 kilo"}/>
     </Box>
   );
 }

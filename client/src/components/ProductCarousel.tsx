@@ -25,7 +25,7 @@ export default function ProductCarousel(props: { products: string, title: string
   const itemsPerPage = 4
   const pages = Math.ceil(products.length / itemsPerPage)
   return (
-    <Box sx={{bgcolor: "primary.light", p: 4, margin: "24px 0"}}>
+    <Box sx={{boxShadow:6, p: 4, margin: "24px 0"}}>
       <Typography variant="h5" gutterBottom>
         {title}
       </Typography>

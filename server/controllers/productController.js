@@ -3,7 +3,7 @@ const Reviews = require('../models/reviews')
 const mongoose = require("mongoose");
 
 const getProducts = async (req, res) => {
-    const {limit = 15, page = 1, search, category} = req.query
+    const {limit = 15, page = 1, search, category, lowStock, rating, minWeight, maxWeight} = req.query
     const query = {}
     if (search) {
         query.title = {
@@ -17,6 +17,24 @@ const getProducts = async (req, res) => {
             $options: 'i'
         }
     }
+    if (lowStock === 'true') {
+        query.stock = {
+            $lte: 5,
+            $gt: 0
+        }
+    }
+    if (rating) {
+        query.rating = {
+            $gte: parseFloat(rating)
+        }
+    }
+    if (minWeight || maxWeight) {
+        query.weight = {
+            ...(minWeight && { $gte: parseFloat(minWeight) }),
+            ...(maxWeight && { $lte: parseFloat(maxWeight) }),
+        };
+    }
+
     const skip = (parseInt(page) - 1) * parseInt(limit)
     const products = await Product.find(query).skip(skip).limit(parseInt(limit))
     const totalProducts = await Product.countDocuments(query)

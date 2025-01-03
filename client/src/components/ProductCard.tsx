@@ -36,7 +36,7 @@ export default function ProductCard(props: { product?: ProductsInterface, empty?
     return (
       <Card
         sx={{
-          bgcolor: "primary.dark", color: "white", minWidth: 200, width: 198, cursor: "pointer",
+          bgcolor: "primary.dark", color: "white", minWidth: 200, width: 198, height: 350,  cursor: "pointer",
           '&:hover': {
             transform: "scale(1.05)",
             transition: "transform 0.2s",
@@ -83,9 +83,8 @@ export default function ProductCard(props: { product?: ProductsInterface, empty?
     )
   } else {
     return (
-      // todo po załadaowaniu produktu psuje sie rozmiar
       <Card sx={{bgcolor: "primary.dark", color: "white", minWidth: 200, width: 200}}>
-        <Box sx={{display: "flex", justifyContent: "center", alignItems: "center", height: 325}}>
+        <Box sx={{display: "flex", justifyContent: "center", alignItems: "center", height: 350}}>
           <CircularProgress/>
         </Box>
       </Card>
