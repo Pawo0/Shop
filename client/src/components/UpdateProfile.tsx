@@ -1,4 +1,4 @@
-import {Box, Button, CardContent, CardHeader, TextField, Typography} from "@mui/material";
+import {Box, Button, CardContent, CardHeader, FormControl, TextField, Typography} from "@mui/material";
 import React, {useContext, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {UserContext} from "../contexts/UserContext.tsx";
@@ -9,10 +9,10 @@ export default function UpdateProfile() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("")
 
-  const [usernameLengthError, setUsernameLengthError] = useState(false);
-  const [usernameError, setUsernameError] = useState(false);
+  // if we want to change username we have to change the backend for reviews
   const [emailLengthError, setEmailLengthError] = useState(false);
   const [emailError, setEmailError] = useState(false);
+  const [emailExists, setEmailExists] = useState(false);
   const [firstNameError, setFirstNameError] = useState(false);
   const [lastNameError, setLastNameError] = useState(false);
 
@@ -24,17 +24,19 @@ export default function UpdateProfile() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = e.target;
     switch (name) {
-      case "username":
-        setUsername(value);
-        break;
       case "email":
         setEmail(value);
+        setEmailLengthError(false);
+        setEmailError(false);
+        setEmailExists(false);
         break;
       case "firstName":
         setFirstName(value);
+        setFirstNameError(false)
         break;
       case "lastName":
         setLastName(value);
+        setLastNameError(false)
         break
     }
   }
@@ -49,10 +51,6 @@ export default function UpdateProfile() {
 
   const checkValid = async () => {
     let error = false;
-    if (username.length !== 0 && username.length < 3) {
-      setUsernameLengthError(true);
-      error = true;
-    } else setEmailLengthError(false)
     if (email.length !== 0 && email.length < 3) {
       setEmailLengthError(true);
       error = true;
@@ -65,31 +63,33 @@ export default function UpdateProfile() {
       setLastNameError(true);
       error = true;
     } else setLastNameError(false)
-    if (username || email) {
+    if (email) {
+      if (!email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
+        setEmailError(true);
+        return false
+      } else setEmailError(false)
+
+
       const res = await fetch(`http://localhost:5000/api/users/check`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({username, email})
+        body: JSON.stringify({email})
       })
       const data = await res.json();
-      if (data.usernameExists) {
-        setUsernameError(true);
+      if (data.emailExist) {
+        setEmailExists(true);
         error = true;
-      } else setUsernameError(false)
-      if (data.emailExists) {
-        setEmailError(true);
-        error = true;
-      } else setEmailError(false)
+      } else setEmailExists(false)
     }
 
     return !error
   }
 
   const handleSave = async () => {
-    await checkValid();
-    if (usernameError || emailError || usernameLengthError || emailLengthError || firstNameError || lastNameError) return;
+    const valid = await checkValid();
+    if (!valid) return;
     let body = {
       username: username.length === 0 ? undefined : username,
       email: email.length === 0 ? undefined : email,
@@ -114,24 +114,26 @@ export default function UpdateProfile() {
     <>
       <CardHeader title={"Update Profile"}/>
       <CardContent>
-        <Box sx={{display: "flex", flexDirection: "column", gap: 2}}>
-          <TextField variant={"outlined"} label={"Username"} value={username} name={"username"} onChange={handleChange}
-                     error={usernameLengthError}
-                     helperText={usernameLengthError ? "Username must be at least 3 characters long" : ""}
-                     fullWidth/>
-          <TextField variant={"outlined"} label={"Email"} value={email} name={"email"} onChange={handleChange}
-                     error={emailLengthError} fullWidth/>
-          <TextField variant={"outlined"} label={"First Name"} value={firstName} name={"firstName"}
-                     onChange={handleChange} error={firstNameError}
-                     fullWidth/>
-          <TextField variant={"outlined"} label={"Last Name"} value={lastName} name={"lastName"} onChange={handleChange}
-                     error={lastNameError} fullWidth/>
-        </Box>
-        <Typography variant={"body2"}>Note: Fill only fields which you want to change </Typography>
-        <Box sx={{display: "flex", width: "50%", gap: 2, margin: "16px auto"}}>
-          <Button variant={"contained"} sx={{flex: 1}} onClick={handleSave}>Save</Button>
-          <Button variant={"contained"} sx={{flex: 1}} color="error" onClick={handleCancel}>Cancel</Button>
-        </Box>
+        <FormControl sx={{display: "flex", flexDirection: "column", gap: 2}}>
+
+          <Box sx={{display: "flex", flexDirection: "column", gap: 2}}>
+            <TextField variant={"outlined"} label={"Email"} value={email} name={"email"} onChange={handleChange}
+                       error={emailLengthError || emailError || emailExists}
+                       helperText={emailLengthError ? "Email should be at least 3 characters" : emailError ? "Not valid format" : emailExists ? "Email already exists" : ""}
+                       fullWidth/>
+            <TextField variant={"outlined"} label={"First Name"} value={firstName} name={"firstName"}
+                       onChange={handleChange} error={firstNameError}
+                       fullWidth/>
+            <TextField variant={"outlined"} label={"Last Name"} value={lastName} name={"lastName"}
+                       onChange={handleChange}
+                       error={lastNameError} fullWidth/>
+          </Box>
+          <Typography variant={"body2"}>Note: Fill only fields which you want to change </Typography>
+          <Box sx={{display: "flex", width: "50%", gap: 2, margin: "16px auto"}}>
+            <Button variant={"contained"} sx={{flex: 1}} onClick={handleSave} type={"submit"}>Save</Button>
+            <Button variant={"contained"} sx={{flex: 1}} color="error" onClick={handleCancel}>Cancel</Button>
+          </Box>
+        </FormControl>
       </CardContent>
     </>
   )
