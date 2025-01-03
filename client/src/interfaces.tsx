@@ -68,5 +68,5 @@ export interface OrderHistInterface {
   total: number;
   totalQuantity: number;
   totalProducts: number;
-  updatedAt: string;
+  createdAt: string;
 }

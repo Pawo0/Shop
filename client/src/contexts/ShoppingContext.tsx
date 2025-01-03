@@ -1,6 +1,7 @@
 import React, {createContext, Dispatch, SetStateAction, useContext, useEffect, useState} from "react";
 import {AuthContext} from "./AuthContext.tsx";
 import {CartProductInterface, ProductsInterface} from "../interfaces.tsx";
+import {OrderHistContext} from "./OrderHistContext.tsx";
 
 
 interface ShoppingContextProps {
@@ -29,6 +30,7 @@ export const ShoppingProvider = ({children}: { children: React.ReactNode }) => {
   const [cartTotalPrice, setCartTotalPrice] = React.useState<number>(0);
 
   const {userId} = useContext(AuthContext)!;
+  const {addOrder} = useContext(OrderHistContext)!;
 
   const checkoutCart = () => {
     if (!userId) {
@@ -48,6 +50,7 @@ export const ShoppingProvider = ({children}: { children: React.ReactNode }) => {
       .then(res => res.json())
       .then(data => {
         console.log("Order placed", data)
+        addOrder(data.newOrderHist)
         setCart([])
         setCartTotalPrice(0)
         setCartTotalProducts(0)

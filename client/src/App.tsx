@@ -24,8 +24,8 @@ function App() {
     <AuthProvider>
       <UserProvider>
         <SearchProvider>
-          <ShoppingProvider>
-            <OrderHistProvider>
+          <OrderHistProvider>
+            <ShoppingProvider>
               <BrowserRouter>
                 <Routes>
                   <Route path={"/"} element={<Layout/>}>
@@ -45,8 +45,8 @@ function App() {
                   </Route>
                 </Routes>
               </BrowserRouter>
-            </OrderHistProvider>
-          </ShoppingProvider>
+            </ShoppingProvider>
+          </OrderHistProvider>
         </SearchProvider>
       </UserProvider>
     </AuthProvider>

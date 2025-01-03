@@ -5,6 +5,7 @@ import {AuthContext} from "./AuthContext.tsx";
 interface OrderHistContextProps {
   carts: OrderHistInterface[];
   cartsCount: number;
+  addOrder: (order: OrderHistInterface) => void;
 }
 
 export const OrderHistContext = createContext<OrderHistContextProps | null>(null);
@@ -24,8 +25,13 @@ export const OrderHistProvider = ({children}: { children: React.ReactNode }) => 
       })
   }, [userId]);
 
+  const addOrder = (order: OrderHistInterface) => {
+    setCarts([order, ...carts]);
+    setCartsCount(cartsCount + 1);
+  }
+
   return (
-    <OrderHistContext.Provider value={{carts, cartsCount}}>
+    <OrderHistContext.Provider value={{carts, cartsCount, addOrder}}>
       {children}
     </OrderHistContext.Provider>
   )
