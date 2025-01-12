@@ -14,8 +14,8 @@ export default function Cart() {
 
 
   return (
-    <Container>
-      <Typography variant="h4" gutterBottom>
+    <Container sx={{mt:2}}>
+      <Typography variant="h4" p={1}>
         Cart
       </Typography>
       <Grid2 container spacing={2}>

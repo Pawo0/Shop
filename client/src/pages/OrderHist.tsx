@@ -24,7 +24,7 @@ export default function OrderHist() {
 
   return (
     <Container sx={{mt: 2}}>
-      <Typography variant="h4" gutterBottom> Order History</Typography>
+      <Typography variant="h4" p={1}> Order History</Typography>
       {
         carts.length !== 0 ?
         carts.map(order => (

@@ -14,7 +14,7 @@ export default function Header() {
     setAnchorEl(null);
   };
   return(
-    <AppBar position={"static"} sx={{bgcolor: "white"}}>
+    <AppBar position={"static"} sx={{bgcolor: "white", mt:2}}>
       <HeaderFirstPart />
       <MenuMain
         handleMenuClick={handleMenuClick}

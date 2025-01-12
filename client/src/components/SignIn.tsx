@@ -37,6 +37,10 @@ export default function SignIn() {
           setToken(data.token);
           navigate(redirectPath);
         }
+        else{
+          setPasswordError(true);
+          setUsernameError(true);
+        }
       })
 
   }
