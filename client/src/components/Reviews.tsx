@@ -26,6 +26,7 @@ export default function Reviews({product}: { product: ProductsInterface | null }
   const [reviews, setReviews] = useState<ProductsInterface["reviews"]>([]);
   const [editingReviewId, setEditingReviewId] = useState<string | null>(null);
   const [editingComment, setEditingComment] = useState<string>("");
+  const [editingCommentError, setEditingCommentError] = useState(false);
   const [editingRating, setEditingRating] = useState<number>(0);
   const [deletingReviewId, setDeletingReviewId] = useState<string | null>(null);
   const [reviewAdded, setReviewAdded] = useState<boolean>(false)
@@ -46,12 +47,22 @@ export default function Reviews({product}: { product: ProductsInterface | null }
     if (value) setRating(value);
   };
 
-  const handleSubmit = () => {
+  const commentValidation = () =>{
     if (!rating) setRatingError(true);
     else setRatingError(false);
-    if (comment.length < 3) setCommentError(true);
+    if (comment.trim().length < 1) setCommentError(true);
     else setCommentError(false);
-    if (!rating || comment.length < 3) return;
+    return !(!rating || comment.trim().length < 1);
+  }
+
+  const editCommentValidation = () =>{
+    if (editingComment.trim().length < 1) setEditingCommentError(true)
+    else setEditingCommentError(false)
+    return !(editingComment.trim().length < 1)
+  }
+
+  const handleSubmit = () => {
+    if (!commentValidation()) return
 
     fetch(`http://localhost:5000/api/reviews/add`, {
       method: "POST",
@@ -86,6 +97,8 @@ export default function Reviews({product}: { product: ProductsInterface | null }
   };
 
   const handleSaveClick = (reviewId: string) => {
+    if (!editCommentValidation()) return
+
     fetch(`http://localhost:5000/api/reviews/${reviewId}`, {
       method: "PATCH",
       headers: {
@@ -164,7 +177,7 @@ export default function Reviews({product}: { product: ProductsInterface | null }
 
                     <ReviewBlock review={review} editingReviewId={editingReviewId} editingRating={editingRating}
                                  setEditingRating={setEditingRating} editingComment={editingComment}
-                                 setEditingComment={setEditingComment}/>
+                                 setEditingComment={setEditingComment} editingCommentError={editingCommentError}/>
 
                     <ReviewButtons review={review} userId={userId} role={role} editingReviewId={editingReviewId}
                                    deletingReviewId={deletingReviewId}

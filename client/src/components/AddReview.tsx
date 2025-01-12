@@ -35,7 +35,7 @@ export default function AddReview({
           onChange={(e) => setComment(e.target.value)}
           sx={{mt: 2}}
           error={commentError}
-          helperText={commentError ? "Comment must have at least 3 letters..." : ""}
+          helperText={commentError ? "Comment can't be empty" : ""}
         />
         <Box sx={{display: "flex", justifyContent: "flex-end", mt: 2}}>
           <Button variant={"contained"} onClick={handleSubmit}>Submit</Button>

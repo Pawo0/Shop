@@ -9,9 +9,10 @@ interface ReviewBlockProps {
   setEditingRating: (rating: number) => void;
   editingComment: string;
   setEditingComment: (comment: string) => void;
+  editingCommentError: boolean;
 }
 
-export default function ReviewBlock({review, editingReviewId,  editingRating, setEditingRating, editingComment, setEditingComment}: ReviewBlockProps){
+export default function ReviewBlock({review, editingReviewId,  editingRating, setEditingRating, editingComment, setEditingComment, editingCommentError}: ReviewBlockProps){
   return (
     <Box sx={{ml: 2, flex: 1}}>
       <Typography variant="body2" color="textSecondary">{review.user.username}</Typography>
@@ -28,6 +29,8 @@ export default function ReviewBlock({review, editingReviewId,  editingRating, se
           multiline
           rows={2}
           value={editingComment}
+          error={editingCommentError}
+          helperText={editingCommentError ? "Comment can't be empty" : ""}
           onChange={(e) => setEditingComment(e.target.value)}
         />
       ) : (
