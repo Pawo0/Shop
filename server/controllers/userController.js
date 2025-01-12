@@ -6,8 +6,15 @@ const loginUser = async (req, res) => {
     if (!username || !password) {
         res.status(400).json({message: 'Username and password are required', success: false})
     }
+    const query = {
+        username: {
+            $regex: `^${username}$`,
+            $options: 'i'
+        },
+        password
+    }
     // w przyszlosci mozna zaszyfrowac haslo i zrobic porownanie z zaszyfrowanym haslem
-    const user = await User.findOne({username, password})
+    const user = await User.findOne(query)
     if (user) {
         const token = generateToken(user)
         res.status(200).json({token, success: true})
@@ -98,7 +105,7 @@ const checkIfExist = async (req, res) => {
         }
 
     }
-    return res.status(200).json({success: true,usernameExist, emailExist})
+    return res.status(200).json({success: true, usernameExist, emailExist})
 }
 
 const checkPassword = async (req, res) => {

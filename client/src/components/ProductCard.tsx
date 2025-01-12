@@ -59,7 +59,7 @@ export default function ProductCard(props: { product?: ProductsInterface, empty?
               String(product.price).split('.')[0] + "."
             }
             <Typography component="span" fontSize={15}
-                        color="white">{String(product.price).split('.')[1] + " zł"}
+                        color="white">{String(product.price).split('.')[1] + " PLN"}
             </Typography>
           </Typography>
           <Divider/>

@@ -59,7 +59,7 @@ export default function ProductDetails({size, product, loading, notFound, quanti
           ) : (
             product && (
               <Box>
-                <Typography variant="h6" gutterBottom>Price: {product.price} zł</Typography>
+                <Typography variant="h6" gutterBottom>Price: {product.price} PLN</Typography>
                 <Typography variant="h6" gutterBottom>Category: {product.category}</Typography>
                 <Typography variant="h6" gutterBottom>Brand: {product.brand ? product.brand : "unknown"}</Typography>
                 <Box sx={{display: "flex", alignItems: "center", mb: 2}}>
