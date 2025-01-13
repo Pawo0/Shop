@@ -12,7 +12,7 @@ import {
 import {Add, Remove} from "@mui/icons-material";
 import {ProductsInterface} from "../interfaces.tsx";
 import {useNavigate} from "react-router-dom";
-import {Dispatch, SetStateAction, useContext} from "react";
+import React, {Dispatch, SetStateAction, useContext} from "react";
 import {AuthContext} from "../contexts/AuthContext.tsx";
 import {ShoppingContext} from "../contexts/ShoppingContext.tsx";
 
@@ -47,6 +47,12 @@ export default function ProductDetails({
   let productQuantityInCart = 0;
   if (productInCart.length > 0) productQuantityInCart = productInCart[0].quantity
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newQuantity = Number(e.currentTarget.value)
+    if (product && newQuantity > 1 && newQuantity < product.stock - productQuantityInCart) setQuantity(newQuantity)
+    else if (product && newQuantity > product.stock - productQuantityInCart) setQuantity(Math.max(1, product.stock - productQuantityInCart))
+    else if (!newQuantity || newQuantity < 1) setQuantity(1)
+  }
 
   const handleButtonClick = (productId: string) => {
     if (userId) {
@@ -83,7 +89,7 @@ export default function ProductDetails({
                   <IconButton disabled={quantity <= 1} onClick={handleDecrease}>
                     <Remove/>
                   </IconButton>
-                  <TextField value={quantity} sx={{width: 50, textAlign: "center"}}/>
+                  <TextField value={quantity} onChange={handleChange} sx={{width: 50, textAlign: "center"}}/>
                   <IconButton disabled={quantity >= product.stock - productQuantityInCart} onClick={handleIncrease}>
                     <Add/>
                   </IconButton>

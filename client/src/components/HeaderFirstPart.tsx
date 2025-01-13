@@ -23,7 +23,14 @@ export default function HeaderFirstPart() {
     setSearchOpen(prev => !prev)
   }
 
-  return (<Toolbar sx={{bgcolor: "primary.light", display: "flex", justifyContent: "space-between", padding: 2}}>
+  return (<Toolbar sx={{
+    bgcolor: "primary.light",
+    display: "flex",
+    justifyContent: "space-between",
+    padding: 2,
+    borderTopRightRadius: "15px",
+    borderTopLeftRadius: "15px"
+  }}>
     {!searchOpen && <Logo/>}
 
     {!(isExtraSmallScreen || isSmallScreen) && <SearchBar/>}

@@ -12,6 +12,7 @@ import {useContext} from "react";
 import {OrderHistContext} from "../contexts/OrderHistContext.tsx";
 import { ExpandMore} from "@mui/icons-material";
 import {useNavigate} from "react-router-dom";
+import {format} from "date-fns";
 
 export default function OrderHist() {
   const {carts} = useContext(OrderHistContext)!;
@@ -32,7 +33,7 @@ export default function OrderHist() {
             <ListItem>
               <ListItemText
                 primary={`Order ID: ${order._id}`}
-                secondary={`Order Date: ${new Date(order.createdAt).toLocaleDateString()} | Total Price: ${order.total.toFixed(2)} PLN | Total Quantity: ${order.totalQuantity}`}
+                secondary={`Order Date: ${ format(order.createdAt, 'dd/MM/yyyy')} | Total Price: ${order.total.toFixed(2)} PLN | Total Quantity: ${order.totalQuantity}`}
               />
             </ListItem>
             <Divider />

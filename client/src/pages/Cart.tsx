@@ -19,10 +19,10 @@ export default function Cart() {
         Cart
       </Typography>
       <Grid2 container spacing={2}>
-        <Grid2 size={{xs:12, md: 7, lg:8}} container>
+        <Grid2 size={{xs:12, md:8}} container>
           {cart.length !== 0 ? <CartItems/> : <Typography variant="h5">Nothing to see here</Typography>}
         </Grid2>
-        <Grid2 size={{xs: 12, md:5, lg:4}}>
+        <Grid2 size={{xs: 12, md:4}}>
           <CartSummary/>
           <Button variant={"contained"} onClick={checkoutCart} disabled={cart.length === 0} fullWidth sx={{mt: 2}}>Confirm</Button>
         </Grid2>

@@ -40,7 +40,7 @@ export default function SearchBar() {
       borderRadius: 2,
       display: "flex",
       alignItems: "center",
-      flexGrow: 1,
+      flex: 1,
       maxWidth: "550px"
     }}>
       <TextField

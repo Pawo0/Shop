@@ -13,9 +13,10 @@ export default function Header() {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  return(
-    <AppBar position={"static"} sx={{bgcolor: "white", mt:2}}>
-      <HeaderFirstPart />
+  return (
+    <AppBar position={"static"}
+            sx={{bgcolor: "white", mt: 2, borderTopRightRadius: "15px", borderTopLeftRadius: "15px"}}>
+      <HeaderFirstPart/>
       <MenuMain
         handleMenuClick={handleMenuClick}
         anchorEl={anchorEl}
@@ -23,6 +24,6 @@ export default function Header() {
       />
       <InfoBar/>
     </AppBar>
-    )
+  )
 
 }
