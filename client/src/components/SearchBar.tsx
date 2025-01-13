@@ -1,4 +1,4 @@
-import {Divider, FormControl, IconButton, InputLabel, MenuItem, Select, TextField} from "@mui/material";
+import {Box, Divider, FormControl, IconButton, InputLabel, MenuItem, Select, TextField} from "@mui/material";
 import {Search} from "@mui/icons-material";
 import React, {useContext, useState} from "react";
 import {SearchContext} from "../contexts/SearchContext.tsx";
@@ -33,7 +33,16 @@ export default function SearchBar() {
   }
 
   return (
-    <>
+    <Box sx={{
+      mx: 2,
+      bgcolor: "white",
+      boxShadow: 1,
+      borderRadius: 2,
+      display: "flex",
+      alignItems: "center",
+      flexGrow: 1,
+      maxWidth: "550px"
+    }}>
       <TextField
         variant={"outlined"}
         placeholder={"Search"}
@@ -69,6 +78,6 @@ export default function SearchBar() {
       <IconButton onClick={handleSearch}>
         <Search/>
       </IconButton>
-    </>
+    </Box>
   )
 }
