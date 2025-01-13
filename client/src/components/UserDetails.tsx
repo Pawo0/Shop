@@ -48,7 +48,7 @@ export default function UserDetails() {
       <CardActions>
         <Button variant={"outlined"} component={Link} to={"/user/update"}>Update Profile</Button>
         <Button variant={"outlined"} component={Link} to={"/user/password"}>Change Password</Button>
-        <Button variant={"contained"} onClick={handleLogout}>Logout</Button>
+        <Button variant={"contained"} onClick={handleLogout} sx={{height:"100%"}}>Logout</Button>
       </CardActions>
     </>
   )

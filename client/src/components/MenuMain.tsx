@@ -3,13 +3,24 @@ import {ArrowDropDown} from "@mui/icons-material";
 import MenuButton from "./MenuButton.tsx";
 import useCategories from "../hooks/useCategories.ts";
 import React from "react";
+import useScreenSize from "../hooks/useScreenSzie.ts";
 
 export default function MenuMain({handleMenuClick, anchorEl, handleClose}: {
   handleMenuClick: (e: React.MouseEvent<HTMLButtonElement>) => void,
   anchorEl: HTMLElement | null,
   handleClose: () => void
 }) {
-  const howManyCategories = 8
+  const {isExtraSmallScreen, isSmallScreen, isMediumScreen} = useScreenSize()
+  let howManyCategories;
+  if (isExtraSmallScreen) {
+    howManyCategories = 3;
+  }else if (isSmallScreen){
+    howManyCategories = 5
+  } else if (isMediumScreen) {
+    howManyCategories = 7;
+  } else {
+    howManyCategories = 8;
+  }
   const categories = useCategories()
 
   return (

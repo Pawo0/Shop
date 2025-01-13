@@ -2,7 +2,7 @@ import {Badge, Box, Button, IconButton, Toolbar, Typography} from "@mui/material
 import {Link} from "react-router-dom";
 import {
   AccountBoxOutlined,
-  ReceiptLong,
+  ReceiptLong, Search,
   ShoppingCart,
   ShoppingCartOutlined
 } from "@mui/icons-material";
@@ -10,6 +10,7 @@ import SearchBar from "./SearchBar.tsx";
 import {useContext} from "react";
 import {ShoppingContext} from "../contexts/ShoppingContext.tsx";
 import {UserContext} from "../contexts/UserContext.tsx";
+import useScreenSize from "../hooks/useScreenSzie.ts";
 
 
 export default function HeaderFirstPart() {
@@ -18,6 +19,8 @@ export default function HeaderFirstPart() {
 
   const userContext = useContext(UserContext)
   const {username} = userContext!
+
+  const {isExtraSmallScreen, isSmallScreen} = useScreenSize()
 
 
   return (<Toolbar sx={{bgcolor: "primary.light", display: "flex", justifyContent: "space-between", padding: 2}}>
@@ -45,7 +48,7 @@ export default function HeaderFirstPart() {
         Szop
       </Typography>
     </Button>
-    <Box sx={{
+    {!(isExtraSmallScreen || isSmallScreen) && <Box sx={{
       mx: 2,
       bgcolor: "white",
       boxShadow: 1,
@@ -56,12 +59,19 @@ export default function HeaderFirstPart() {
       maxWidth: "550px"
     }}>
 
-      <SearchBar/>
+        <SearchBar/>
 
 
     </Box>
+    }
 
     <Box sx={{display: "flex", gap: 1}}>
+      {
+        (isExtraSmallScreen || isSmallScreen) &&
+          <IconButton>
+              <Search/>
+          </IconButton>
+      }
       <IconButton component={Link} to={username ? "/orderhist" : "/signin?redirect=/orderhist"}>
         <ReceiptLong/>
       </IconButton>

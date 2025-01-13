@@ -56,7 +56,7 @@ export default function Product() {
   return (
     <Grid2 container spacing={3} padding={3} ref={ref}>
       <ProductPresentation
-        size={8}
+        size={{lg:8, md:6, xs:12}}
         loading={loading}
         notFound={notFound}
         product={product}
@@ -64,7 +64,7 @@ export default function Product() {
         handleThumbnailClick={handleThumbnailClick}
       />
       <ProductDetails
-        size={4}
+        size={{lg:4, md:6, xs: 12}}
         product={product}
         loading={loading}
         notFound={notFound}

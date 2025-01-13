@@ -5,7 +5,7 @@ import ProductImages from "./ProductImages.tsx";
 import LoadingProductImages from "./LoadingProductImages.tsx";
 
 export default function ProductPresentation({size, loading, notFound, product, selectedImage, handleThumbnailClick}: {
-  size: number,
+  size: number | {xs?: number, sm?: number, md?: number, lg?: number},
   loading: boolean,
   notFound: boolean,
   product: ProductsInterface | null,

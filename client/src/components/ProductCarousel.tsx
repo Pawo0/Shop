@@ -5,6 +5,7 @@ import ProductCard from "./ProductCard.tsx";
 import {ProductsInterface} from "../interfaces.tsx"
 import {useState} from "react";
 import useFetchWithInterval from "../hooks/useFetchWithInterval.ts";
+import useScreenSize from "../hooks/useScreenSzie.ts";
 
 export default function ProductCarousel(props: { products: string, title: string }) {
   const [products, setProducts] = useState<ProductsInterface[]>([])
@@ -12,7 +13,7 @@ export default function ProductCarousel(props: { products: string, title: string
 
   useFetchWithInterval({
     url: props.products,
-    onFetchData: (data: any) => {
+    onFetchData: (data) => {
       setProducts(data.products)
     },
     interval: 5000,
@@ -20,12 +21,13 @@ export default function ProductCarousel(props: { products: string, title: string
     setLoading
   })
 
+  const {isSmallScreen, isMediumScreen, isLargeScreen} = useScreenSize()
 
   const {title} = props
-  const itemsPerPage = 4
+  const itemsPerPage = isLargeScreen ? 4 : isMediumScreen ? 3 : isSmallScreen ? 2 : 1
   const pages = Math.ceil(products.length / itemsPerPage)
   return (
-    <Box sx={{boxShadow:6, p: 4, margin: "24px 0"}}>
+    <Box sx={{boxShadow: 6, p: 4, margin: "24px 0"}}>
       <Typography variant="h5" gutterBottom>
         {title}
       </Typography>

@@ -26,7 +26,7 @@ export default function ProductDetails({
                                          handleIncrease,
                                          setQuantity
                                        }: {
-  size: number,
+  size: number | { xs?: number, sm?: number, md?: number, lg?: number },
   product: ProductsInterface | null,
   loading: boolean,
   notFound: boolean,
