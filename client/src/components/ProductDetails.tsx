@@ -16,7 +16,16 @@ import {Dispatch, SetStateAction, useContext} from "react";
 import {AuthContext} from "../contexts/AuthContext.tsx";
 import {ShoppingContext} from "../contexts/ShoppingContext.tsx";
 
-export default function ProductDetails({size, product, loading, notFound, quantity, handleDecrease, handleIncrease, setQuantity}: {
+export default function ProductDetails({
+                                         size,
+                                         product,
+                                         loading,
+                                         notFound,
+                                         quantity,
+                                         handleDecrease,
+                                         handleIncrease,
+                                         setQuantity
+                                       }: {
   size: number,
   product: ProductsInterface | null,
   loading: boolean,
@@ -33,15 +42,17 @@ export default function ProductDetails({size, product, loading, notFound, quanti
   const {userId} = authContext
 
   const shoppingContext = useContext(ShoppingContext)!
-  const {addProduct} = shoppingContext
+  const {addProduct, cart} = shoppingContext
+  const productInCart = cart.filter(el => el.productId == product?._id)
+  let productQuantityInCart = 0;
+  if (productInCart.length > 0) productQuantityInCart = productInCart[0].quantity
 
 
   const handleButtonClick = (productId: string) => {
     if (userId) {
       addProduct(productId, quantity)
       setQuantity(1)
-    }
-    else{
+    } else {
       navigate(`/signin?redirect=/product/${productId}`)
     }
   }
@@ -73,18 +84,21 @@ export default function ProductDetails({size, product, loading, notFound, quanti
                     <Remove/>
                   </IconButton>
                   <TextField value={quantity} sx={{width: 50, textAlign: "center"}}/>
-                  <IconButton disabled={quantity >= product.stock} onClick={handleIncrease}>
+                  <IconButton disabled={quantity >= product.stock - productQuantityInCart} onClick={handleIncrease}>
                     <Add/>
                   </IconButton>
                   <Typography variant="body1" sx={{ml: 2}}>
                     {product.stock} in stock
+                    <Typography component={"span"} variant={"body2"}>
+                      {productQuantityInCart > 0 && ` (${productQuantityInCart} in cart)`}
+                    </Typography>
                   </Typography>
                 </Box>
                 <Button variant="contained" color="secondary" fullWidth
-                        disabled={product.stock === 0}
-                        onClick={()=>handleButtonClick(product._id)}
+                        disabled={product.stock - productQuantityInCart === 0}
+                        onClick={() => handleButtonClick(product._id)}
                         sx={{
-                          '&:active' : {
+                          '&:active': {
                             transform: "scale(0.95)"
                           }
                         }}

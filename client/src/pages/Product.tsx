@@ -1,7 +1,7 @@
 import {Grid2} from "@mui/material";
-import {useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {ProductsInterface} from "../interfaces.tsx";
-import {useParams} from "react-router-dom";
+import {useLocation, useParams} from "react-router-dom";
 import ProductPresentation from "../components/ProductPresentation.tsx";
 import ProductDetails from "../components/ProductDetails.tsx";
 import useFetchWithInterval from "../hooks/useFetchWithInterval.ts";
@@ -15,6 +15,13 @@ export default function Product() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
 
   const [quantity, setQuantity] = useState(1)
+
+  const ref = useRef<HTMLDivElement>(null)
+  const location = useLocation()
+  useEffect(() => {
+    if (ref.current) ref.current.scrollIntoView({behavior: "smooth"})
+  }, [location]);
+
 
   const handleDecrease = () => {
     if (quantity > 1) {
@@ -47,7 +54,7 @@ export default function Product() {
   }
 
   return (
-    <Grid2 container spacing={3} padding={3}>
+    <Grid2 container spacing={3} padding={3} ref={ref}>
       <ProductPresentation
         size={8}
         loading={loading}

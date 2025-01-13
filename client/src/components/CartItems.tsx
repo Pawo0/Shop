@@ -68,7 +68,7 @@ export default function CartItems() {
                 <Box sx={{textAlign: "center"}}>
 
                   <Box sx={{display: "flex", alignItems: "center"}}>
-                    <IconButton color="primary" onClick={() => handleRemove(product.productId)}>
+                    <IconButton disabled={product.quantity <= 1} color="primary" onClick={() => handleRemove(product.productId)}>
                       <Remove/>
                     </IconButton>
 
