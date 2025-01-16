@@ -1,6 +1,14 @@
 # Shop application
 A responsive web-based e-commerce platform built using JavaScript frameworks like React and Material UI for front-end and express with mongodb database as backed. Main aplication features - user login/register, searching for products and adding them to cart.
 
+## Table of Contents
+- [Preview](#preview)
+- [Geting started](#geting-started)
+- [Usage](#usage)
+- [Features](#features)
+- [Used technology](#used-technology)
+- [License](#license)
+
 ## Preview
 ![mainPage](https://github.com/user-attachments/assets/71192295-ce4e-4911-b75a-d053c48ae256)
 ![search](https://github.com/user-attachments/assets/aeb7acd4-4164-4323-a379-9a4fea034a08)
@@ -51,3 +59,6 @@ next go to http://localhost:5173
 - Mongoose
 - JsonWebToken
 - Axios
+
+## License
+ MIT License. See `LICENSE` for details.
