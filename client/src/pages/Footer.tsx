@@ -6,9 +6,9 @@ export default function Footer() {
   const [year, setYear] = useState("2025");
   const [sponsor, setSponsor] = useState("sponosr")
   const location = useLocation()
+
   useEffect(() => {
-    // todo error with cors api
-    fetch('https://cors-anywhere.herokuapp.com/https://getfullyear.com/api/year')
+    fetch('http://localhost:5000/getyear')
       .then(response => response.json())
       .then(data => {
         setYear(data.year_string)
