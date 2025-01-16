@@ -1,9 +1,5 @@
-const express = require("express");
 require("dotenv").config();
 const mongoose = require("mongoose");
-
-const app = express();
-const port = process.env.PORT || 5000;
 
 const axios = require('axios');
 const User = require('../models/user');
@@ -15,9 +11,6 @@ const start = async () => {
         const uri = process.env.MONGODB_URI || "";
         await mongoose.connect(uri);
         console.log("Connected to db...");
-        app.listen(port, () => {
-            console.log(`Listening on ${port}...`);
-        });
     } catch (e) {
         console.log("Failed to connect to a database");
         console.error(e);
@@ -72,4 +65,4 @@ const insertReviewsToDatabase = async (products) => {
     }
 };
 
-start();
+return start();
