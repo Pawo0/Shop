@@ -36,11 +36,11 @@ export default function ProductCard(props: { product?: ProductsInterface, empty?
     return (
       <Card
         sx={{
-          bgcolor: "primary.dark", color: "white", minWidth: 200, width: 198, height: 350,  cursor: "pointer",
+          bgcolor: "primary.dark", color: "white", minWidth: 200, width: 198, height: 350,  cursor: "pointer", boxShadow: "0 0 6px rgba(0,0,0,0.22)",
           '&:hover': {
-            transform: "scale(1.05)",
-            transition: "transform 0.2s",
-            boxShadow: "0 0 10px rgba(0,0,0,0.5)"
+            // transform: "scale(1.003)",
+            transition: "all 0.2s",
+            boxShadow: "0 0 12px rgba(0,0,0,0.3)"
           }
         }}
         key={product._id}

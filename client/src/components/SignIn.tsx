@@ -46,7 +46,7 @@ export default function SignIn() {
   }
 
   return (
-    <Card variant={"outlined"} sx={{width: "50%", margin: "25px auto", boxShadow: 6}}>
+    <Card variant={"outlined"} sx={{width: {md:"50%",sm:"65%", xs:"80%"}, margin: "25px auto", boxShadow: 6}}>
       <CardHeader title={"Sign In"}/>
       <Stack spacing={2}>
         <Box component={"form"} noValidate autoComplete={"off"}

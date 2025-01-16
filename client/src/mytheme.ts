@@ -7,12 +7,14 @@ const theme = createTheme({
       main: grey[500]
     },
     secondary: {
-      light: '#4b61a1',
-      main: '#1E3A8A',
-      dark: '#152860'
+      main: '#134ab0',
     },
   },
   typography: {
+    fontFamily: [
+      "Open Sans",
+      "serif",
+    ].join(','),
     h1: {
       fontSize: "3rem",
       fontWeight: 600

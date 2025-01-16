@@ -26,7 +26,7 @@ export default function HeaderFirstPart() {
   return (<Toolbar sx={{
     bgcolor: "primary.light",
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: searchOpen ? "center" : "space-between",
     padding: 2,
     borderTopRightRadius: "15px",
     borderTopLeftRadius: "15px"

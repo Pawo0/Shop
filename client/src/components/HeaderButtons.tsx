@@ -4,11 +4,13 @@ import {AccountBoxOutlined, ReceiptLong, ShoppingCart, ShoppingCartOutlined} fro
 import {useContext} from "react";
 import {ShoppingContext} from "../contexts/ShoppingContext.tsx";
 import {UserContext} from "../contexts/UserContext.tsx";
+import useScreenSize from "../hooks/useScreenSzie.ts";
 
 export default function HeaderButtons() {
   const shoppingContext = useContext(ShoppingContext)
   const {cartTotalQuantity} = shoppingContext!
 
+  const {isExtraSmallScreen} = useScreenSize()
 
   const userContext = useContext(UserContext)
   const {username} = userContext!
@@ -23,13 +25,23 @@ export default function HeaderButtons() {
             <Badge badgeContent={cartTotalQuantity} color={"secondary"}><ShoppingCart/></Badge> :
             <ShoppingCartOutlined/>
         }
-      </IconButton>{username ?
-      <Button component={Link} to={"/user"} endIcon={<AccountBoxOutlined/>} variant={"outlined"}
-              sx={{color: "#676767"}}>{username}</Button> :
-      <Button component={Link} to={"/signin"} endIcon={<AccountBoxOutlined/>} variant={"outlined"}
-              sx={{color: "#676767"}}>
-        My&nbsp;account
-      </Button>}
+      </IconButton>
+      {
+        isExtraSmallScreen ?
+          <IconButton component={Link} to={username ? "/user" : "/signin"}>
+            <AccountBoxOutlined />
+          </IconButton>
+          :
+        <Button component={Link}
+                to={username ? "/user" : "/signin"}
+                endIcon={<AccountBoxOutlined/>}
+                variant={"outlined"}
+                sx={{color: "#676767", ml:1}}>
+          {username ? username : "My account"}
+        </Button>
+
+      }
+
     </Box>
   )
 }
