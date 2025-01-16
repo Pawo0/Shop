@@ -6,6 +6,7 @@ import {ProductsInterface} from "../interfaces.tsx"
 import {useState} from "react";
 import useFetchWithInterval from "../hooks/useFetchWithInterval.ts";
 import useScreenSize from "../hooks/useScreenSzie.ts";
+import LoadingProductCard from "./LoadingProductCard.tsx";
 
 export default function ProductCarousel(props: { products: string, title: string }) {
   const [products, setProducts] = useState<ProductsInterface[]>([])
@@ -45,7 +46,7 @@ export default function ProductCarousel(props: { products: string, title: string
             [...Array(2).keys()].map(idx => (
               <Box key={idx} sx={{display: "flex", justifyContent: "center", gap: 2}}>
                 {[...Array(4).keys()].map((idx2) => (
-                  <ProductCard key={idx2} empty={true}/>
+                  <LoadingProductCard key={idx2}/>
                 ))}
               </Box>
             ))

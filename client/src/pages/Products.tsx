@@ -19,7 +19,9 @@ export default function Products() {
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
   const [allPages, setAllPages] = useState(1)
-  const [productsPerPage, _] = useState(15)
+  // in future add change products per page
+  // const [productsPerPage, _] = useState(15)
+  const productsPerPage = 15
 
   const location = useLocation()
 
@@ -31,13 +33,19 @@ export default function Products() {
   }
 
   useEffect(() => {
+    // after change category, load again and set 1st page
     setPage(1)
+    setLoading(true)
   }, [location, productsPerPage]);
 
+  // todo add page to link query
+  useEffect(() => {
+    setLoading(true)
+  }, [page]);
 
   useFetchWithInterval({
     url: `http://localhost:5000/api/products?category=${category}&page=${page}&limit=${productsPerPage}&search=${searchQuery}`,
-    onFetchData: (data: any) => {
+    onFetchData: (data) => {
       setProducts(data.products)
       setAllPages(Math.ceil(data.totalProducts / productsPerPage))
     },
@@ -56,7 +64,7 @@ export default function Products() {
             ? `You are looking for: "${searchQuery}" in category: ${category}`
             : `Category: ${category}`}
         </Typography>
-        <ProductList products={products}/>
+        <ProductList products={products} loading={loading} productsPerPage={productsPerPage}/>
       </div>
       <PaginationControls page={page} allPages={allPages} handlePageChange={handlePageChange}/>
     </>

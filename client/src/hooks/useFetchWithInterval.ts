@@ -22,7 +22,9 @@ export default function useFetchWithInterval({
 
 
   useEffect(() => {
-    const fetchData = () => {
+    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+    const fetchData = async () => {
+    await sleep(500) // to see loading functionality
       fetch(url)
         .then(res => {
           if (res.status === 404) {

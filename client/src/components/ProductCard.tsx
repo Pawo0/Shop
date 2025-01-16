@@ -1,11 +1,11 @@
-import {Box, Button, Card, CardContent, CardMedia, CircularProgress, Divider, Typography} from "@mui/material";
+import {Box, Button, Card, CardContent, CardMedia,  Divider, Typography} from "@mui/material";
 import {ProductsInterface} from "../interfaces.tsx"
 import {useNavigate} from "react-router-dom";
 import React, {useContext} from "react";
 import {ShoppingContext} from "../contexts/ShoppingContext.tsx";
 import {AuthContext} from "../contexts/AuthContext.tsx";
 
-export default function ProductCard(props: { product?: ProductsInterface, empty?: boolean }) {
+export default function ProductCard(props: { product?: ProductsInterface}) {
   const {product} = props
   const navigate = useNavigate()
 
@@ -78,14 +78,6 @@ export default function ProductCard(props: { product?: ProductsInterface, empty?
           >
             Add to cart
           </Button>
-        </Box>
-      </Card>
-    )
-  } else {
-    return (
-      <Card sx={{bgcolor: "primary.dark", color: "white", minWidth: 200, width: 200}}>
-        <Box sx={{display: "flex", justifyContent: "center", alignItems: "center", height: 350}}>
-          <CircularProgress/>
         </Box>
       </Card>
     )
