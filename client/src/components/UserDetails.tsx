@@ -6,7 +6,7 @@ import {Button, CardActions, CardContent, CardHeader, Divider, Typography} from 
 
 export default function UserDetails() {
   const authContext = useContext(AuthContext)
-  const {setToken} = authContext!;
+  const {logout} = authContext!;
 
   const userContext = useContext(UserContext)!;
   const {username, role, email, firstName, lastName, userId} = userContext
@@ -14,8 +14,7 @@ export default function UserDetails() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    setToken("");
+    logout();
     navigate("/");
   }
 
@@ -48,7 +47,7 @@ export default function UserDetails() {
       <CardActions>
         <Button variant={"outlined"} component={Link} to={"/user/update"}>Update Profile</Button>
         <Button variant={"outlined"} component={Link} to={"/user/password"}>Change Password</Button>
-        <Button variant={"contained"} onClick={handleLogout} sx={{height:"100%"}}>Logout</Button>
+        <Button variant={"contained"} onClick={handleLogout} sx={{height: "100%"}}>Logout</Button>
       </CardActions>
     </>
   )

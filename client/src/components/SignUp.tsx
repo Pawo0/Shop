@@ -14,7 +14,7 @@ export default function SignUp() {
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
 
   const authContext = useContext(AuthContext);
-  const {setToken} = authContext!;
+  const {register} = authContext!;
 
   const navigate = useNavigate();
 
@@ -26,29 +26,23 @@ export default function SignUp() {
     else setEmailError(false);
     if (!password) setPasswordError(true);
     else setPasswordError(false);
-    if (!username || !email || !password ) return;
+    if (!username || !email || !password) return;
     if (password !== confirmPassword) {
       setPasswordError(true);
       setConfirmPasswordError(true);
       return;
     }
 
-    fetch("http://localhost:5000/api/users/register", {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({username, email, password})
+    register(username, email, password).then(success => {
+      if (success) navigate("/user");
+      else {
+        setPasswordError(true);
+        setUsernameError(true);
+        setEmailError(true);
+      }
     })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          localStorage.setItem("token", data.token);
-          setToken(data.token);
-          navigate("/user")
-        }
-      })
   }
+
 
   return (
     <Card variant={"outlined"} sx={{width: "50%", margin: "25px auto", boxShadow: 6}}>

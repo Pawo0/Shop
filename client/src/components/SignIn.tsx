@@ -9,7 +9,7 @@ export default function SignIn() {
   const [usernameError, setUsernameError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const authContext = useContext(AuthContext)
-  const {setToken} = authContext!;
+  const {login} = authContext!;
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -23,30 +23,17 @@ export default function SignIn() {
     else setPasswordError(false);
     if (!username || !password) return
 
-    fetch("http://localhost:5000/api/users/login", {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({username, password})
+    login(username, password).then(success => {
+      if (success) navigate(redirectPath);
+      else {
+        setPasswordError(true);
+        setUsernameError(true);
+      }
     })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          localStorage.setItem("token", data.token);
-          setToken(data.token);
-          navigate(redirectPath);
-        }
-        else{
-          setPasswordError(true);
-          setUsernameError(true);
-        }
-      })
-
   }
 
   return (
-    <Card variant={"outlined"} sx={{width: {md:"50%",sm:"65%", xs:"80%"}, margin: "25px auto", boxShadow: 6}}>
+    <Card variant={"outlined"} sx={{width: {md: "50%", sm: "65%", xs: "80%"}, margin: "25px auto", boxShadow: 6}}>
       <CardHeader title={"Sign In"}/>
       <Stack spacing={2}>
         <Box component={"form"} noValidate autoComplete={"off"}
