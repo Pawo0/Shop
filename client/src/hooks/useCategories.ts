@@ -1,24 +1,23 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function useCategories() {
   const [categories, setCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = () => {
-      fetch('http://localhost:5000/api/products/categories')
-        .then(res => res.json())
-        .then(data => {
-          let cat = data.categories.filter((el: string) => (!el.match('^men') && !el.match('^women')));
-          console.log("Fetched categories:", cat);
-          setCategories(cat);
-          setLoading(false);
-        })
-        .catch(err => {
-          console.error('Błąd pobierania kategorii:', err);
-        });
+    const fetchData = async () => {
+      try {
+        const res = await axios.get('http://localhost:5000/api/products/categories');
+        const data = res.data;
+        const cat = data.categories.filter((el: string) => (!el.match('^men') && !el.match('^women')));
+        setCategories(cat);
+        setLoading(false);
+      } catch (err) {
+        console.error('Błąd pobierania kategorii:', err);
+      }
     }
-    fetchData()
+    fetchData();
 
     const intervalId = setInterval(() => {
       if (loading) {

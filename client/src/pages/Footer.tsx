@@ -1,6 +1,7 @@
 import {Container, Divider, Typography} from "@mui/material";
 import {useEffect, useState} from "react";
 import {useLocation} from "react-router-dom";
+import axios from "axios";
 
 export default function Footer() {
   const [year, setYear] = useState("2025");
@@ -8,12 +9,13 @@ export default function Footer() {
   const location = useLocation()
 
   useEffect(() => {
-    fetch('http://localhost:5000/getyear')
-      .then(response => response.json())
-      .then(data => {
-        setYear(data.year_string)
-        setSponsor(data.sponsored_by)
-      });
+    axios.get('http://localhost:5000/getyear')
+      .then(response => {
+        setYear(response.data.year_string)
+        setSponsor(response.data.sponsored_by)
+      })
+      .catch(err => console.error('Error fetching year:', err))
+
 
   }, [location])
   return (

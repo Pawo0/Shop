@@ -2,6 +2,7 @@ import {Box, Button, CardContent, CardHeader, FormControl, TextField, Typography
 import React, {useContext, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {UserContext} from "../contexts/UserContext.tsx";
+import axios from "axios";
 
 export default function UpdateProfile() {
   const [username, setUsername] = useState("");
@@ -17,7 +18,7 @@ export default function UpdateProfile() {
   const [lastNameError, setLastNameError] = useState(false);
 
   const userContext = useContext(UserContext)!;
-  const {userId, editProfile} = userContext;
+  const {editProfile} = userContext;
 
   const navigate = useNavigate()
 
@@ -64,48 +65,34 @@ export default function UpdateProfile() {
       error = true;
     } else setLastNameError(false)
     if (email) {
-      if (!email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
+      if (!email.match(/^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/)) {
         setEmailError(true);
         return false
       } else setEmailError(false)
-
-
-      const res = await fetch(`http://localhost:5000/api/users/check`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({email})
-      })
-      const data = await res.json();
-      if (data.emailExist) {
-        setEmailExists(true);
-        error = true;
-      } else setEmailExists(false)
+      try {
+        const res = await axios.post(`http://localhost:5000/api/users/check`, {email});
+        if (res.data.emailExist) {
+          setEmailExists(true);
+          return false
+        } else setEmailExists(false)
+      } catch (e) {
+        console.error('Error checking email:', e);
+      }
     }
-
     return !error
   }
 
   const handleSave = async () => {
     const valid = await checkValid();
     if (!valid) return;
-    let body = {
+    const body = {
       username: username.length === 0 ? undefined : username,
       email: email.length === 0 ? undefined : email,
       firstName: firstName.length === 0 ? undefined : firstName,
       lastName: lastName.length === 0 ? undefined : lastName
     }
-    const res = await fetch(`http://localhost:5000/api/users/${userId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(body)
-    })
-    const data = await res.json();
-    if (data.success) {
-      editProfile({username, email, firstName, lastName})
+    const success = await editProfile(body);
+    if (success) {
       navigate("/user")
     }
   }

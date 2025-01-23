@@ -130,11 +130,15 @@ const updateCart = async (req, res) => {
     cart.totalQuantity = products.reduce((acc, el) => acc + el.quantity, 0)
     cart.totalProducts = products.length
     cart.total = products.reduce((acc, el) => acc + el.price * el.quantity, 0)
-    await cart.save()
-    return res.status(200).json({cart, success: true})
+    try {
+        await cart.save()
+        return res.status(200).json({cart, success: true})
+    } catch (error) {
+        return res.status(400).json({message: error.message, success: false})
+    }
 }
 
-const addCart = async (req,res) => {
+const addCart = async (req, res) => {
     const {userId, username, products} = req.body
     const existingCart = await Cart.findOne({'user.userId': userId})
     if (existingCart) {
@@ -150,8 +154,13 @@ const addCart = async (req,res) => {
         totalQuantity: products.reduce((acc, el) => acc + el.quantity, 0),
         total: products.reduce((acc, el) => acc + el.price * el.quantity, 0)
     })
-    await newCart.save()
-    return res.status(201).json({newCart, success: true})
+    try {
+
+        await newCart.save()
+        return res.status(201).json({newCart, success: true})
+    } catch (error) {
+        return res.status(400).json({message: error.message, success: false})
+    }
 }
 
 const deleteCart = async (req, res) => {
@@ -194,7 +203,6 @@ const checkoutCart = async (req, res) => {
 
     res.status(201).json({newOrderHist, success: true});
 };
-
 
 
 module.exports = {

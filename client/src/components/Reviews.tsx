@@ -17,6 +17,7 @@ import ReviewButtons from "./ReviewButtons.tsx";
 import {Link} from "react-router-dom";
 import ReviewBlock from "./ReviewBlock.tsx";
 import {UserContext} from "../contexts/UserContext.tsx";
+import axios from "axios";
 
 export default function Reviews({product}: { product: ProductsInterface | null }) {
   const [rating, setRating] = useState<number>(0);
@@ -38,16 +39,16 @@ export default function Reviews({product}: { product: ProductsInterface | null }
 
   useEffect(() => {
     if (!product) return;
-    fetch(`http://localhost:5000/api/reviews/product/${product._id}`)
-      .then(res => res.json())
-      .then(data => setReviews(data.reviews));
+    axios.get(`http://localhost:5000/api/reviews/product/${product._id}`)
+      .then(res => setReviews(res.data.reviews))
+      .catch(err => console.error('Error fetching reviews:', err));
   }, [product]);
 
   const handleRatingChange = (_: React.SyntheticEvent, value: number | null) => {
     if (value) setRating(value);
   };
 
-  const commentValidation = () =>{
+  const commentValidation = () => {
     if (!rating) setRatingError(true);
     else setRatingError(false);
     if (comment.trim().length < 1) setCommentError(true);
@@ -55,37 +56,29 @@ export default function Reviews({product}: { product: ProductsInterface | null }
     return !(!rating || comment.trim().length < 1);
   }
 
-  const editCommentValidation = () =>{
+  const editCommentValidation = () => {
     if (editingComment.trim().length < 1) setEditingCommentError(true)
     else setEditingCommentError(false)
     return !(editingComment.trim().length < 1)
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!commentValidation()) return
 
-    fetch(`http://localhost:5000/api/reviews/add`, {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        rating, comment, user: {
-          userId: userId,
-          username: username
-        }, productId: product?._id
-      })
-    })
-      .then(res => res.json())
-      .then(data => {
-          console.log(data);
-          if (data.success) {
-            setReviews([...reviews, data.review]);
-          }
-        }
-      );
+
+    const res = await axios.post(`http://localhost:5000/api/reviews/add`, {
+      rating,
+      comment,
+      user: {userId, username},
+      productId: product?._id
+    });
+    if (res.data.success) {
+      setReviews([...reviews, res.data.review]);
+      setReviewAdded(true);
+    }
 
     console.log(rating, comment);
+    // reset form
     setComment("");
     setRating(0);
   };
@@ -96,31 +89,29 @@ export default function Reviews({product}: { product: ProductsInterface | null }
     setEditingRating(currentRating);
   };
 
-  const handleSaveClick = (reviewId: string) => {
+  const handleSaveClick = async (reviewId: string) => {
     if (!editCommentValidation()) return
 
-    fetch(`http://localhost:5000/api/reviews/${reviewId}`, {
-      method: "PATCH",
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({comment: editingComment, rating: editingRating})
-    })
-      .then(res => res.json())
-      .then(data => {
-        console.log(data)
-        if (data.success) {
-          setReviews(reviews.map(review => review._id === reviewId ? {
-            ...review,
-            comment: editingComment,
-            rating: editingRating,
-            updatedAt: data.review.updatedAt
-          } : review));
-          setEditingReviewId(null);
-          setEditingComment("");
-          setEditingRating(0);
-        }
+    try {
+      const res = await axios.patch(`http://localhost:5000/api/reviews/${reviewId}`, {
+        comment: editingComment,
+        rating: editingRating
       });
+      if (res.data.success) {
+        setReviews(reviews.map(review => review._id === reviewId ? {
+          ...review,
+          comment: editingComment,
+          rating: editingRating,
+          updatedAt: res.data.review.updatedAt
+        } : review));
+        setEditingReviewId(null);
+        setEditingComment("");
+        setEditingRating(0);
+      }
+    } catch (err) {
+      console.error('Error updating review:', err);
+    }
+
   };
 
   const handleDiscardClick = () => {
@@ -133,21 +124,16 @@ export default function Reviews({product}: { product: ProductsInterface | null }
     setDeletingReviewId(reviewId);
   }
 
-  const handleConfirmDeleteClick = (reviewId: string) => {
-    fetch(`http://localhost:5000/api/reviews/${reviewId}`, {
-      method: "DELETE",
-      headers: {
-        'Content-Type': 'application/json'
+  const handleConfirmDeleteClick = async (reviewId: string) => {
+    try {
+      const res = await axios.delete(`http://localhost:5000/api/reviews/${reviewId}`);
+      if (res.data.success) {
+        setReviews(reviews.filter(review => review._id !== reviewId));
+        setReviewAdded(false);
       }
-    })
-      .then(res => res.json())
-      .then(data => {
-        console.log(data);
-        if (data.success) {
-          setReviews(reviews.filter(review => review._id !== reviewId));
-          setReviewAdded(false);
-        }
-      });
+    } catch (err) {
+      console.error('Error deleting review:', err);
+    }
   }
 
   return (

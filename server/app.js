@@ -14,10 +14,14 @@ app.use(cors())
 app.use(express.json())
 
 app.use('/getyear', async (req, res) => {
-    const response = await fetch('https://getfullyear.com/api/year');
-    const data = await response.text();
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.status(200).send(data);
+    try {
+        const response = await fetch('https://getfullyear.com/api/year');
+        const data = await response.text();
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.status(200).send(data);
+    } catch (error) {
+        res.status(400).send(error.message)
+    }
 });
 
 const productRouter = require('./routes/productRoute')

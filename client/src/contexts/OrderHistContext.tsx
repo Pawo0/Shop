@@ -1,6 +1,7 @@
 import React, {createContext, useContext, useEffect} from "react";
 import {OrderHistInterface} from "../interfaces.tsx";
 import {AuthContext} from "./AuthContext.tsx";
+import axios from "axios";
 
 interface OrderHistContextProps {
   carts: OrderHistInterface[];
@@ -17,12 +18,12 @@ export const OrderHistProvider = ({children}: { children: React.ReactNode }) => 
 
   useEffect(() => {
     if (!userId) return;
-    fetch(`http://localhost:5000/api/orderhist/user/${userId}`)
-      .then(res => res.json())
-      .then(data => {
-        setCartsCount(data.orderHist.length)
-        setCarts(data.orderHist)
+    axios.get(`http://localhost:5000/api/orderhist/user/${userId}`)
+      .then(res => {
+        setCartsCount(res.data.orderHist.length)
+        setCarts(res.data.orderHist)
       })
+      .catch(err => console.error('Error fetching order history:', err));
   }, [userId]);
 
   const addOrder = (order: OrderHistInterface) => {

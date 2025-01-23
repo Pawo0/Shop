@@ -1,4 +1,5 @@
 import {useEffect} from "react";
+import axios from "axios";
 
 interface FetchParams {
   url: string;
@@ -20,42 +21,38 @@ export default function useFetchWithInterval({
                                                setLoading
                                              }: FetchParams) {
 
-
   useEffect(() => {
     const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
     const fetchData = async () => {
-    await sleep(500) // to see loading functionality
-      fetch(url)
-        .then(res => {
-          if (res.status === 404) {
-            if (onNotFound) {
-              onNotFound()
-            }
-            setLoading(false)
+      await sleep(500); // to see loading functionality in action
+      try {
+        const res = await axios.get(url);
+        if (res.status === 404) {
+          if (onNotFound) {
+            onNotFound();
           }
-          return res.json()
-        })
-        .then(data => {
-          console.log('Fetched data:', data)
+          setLoading(false);
+        } else {
           if (onFetchData) {
-            onFetchData(data)
+            onFetchData(res.data);
           }
-          setLoading(false)
-        })
-        .catch(err => {
-          console.error('Error with loading data:', err)
-        })
-    }
-    fetchData()
+          setLoading(false);
+        }
+      } catch (err) {
+        console.error('Error with loading data:', err);
+        setLoading(false);
+      }
+    };
+    fetchData();
 
     const intervalId = setInterval(() => {
       if (loading) {
-        fetchData()
+        fetchData();
       } else {
-        clearInterval(intervalId)
+        clearInterval(intervalId);
       }
-    }, interval)
+    }, interval);
 
-    return () => clearInterval(intervalId)
+    return () => clearInterval(intervalId);
   }, [...dependencies, loading]);
 }

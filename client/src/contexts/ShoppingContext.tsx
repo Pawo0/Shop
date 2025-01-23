@@ -1,8 +1,8 @@
 import React, {createContext, Dispatch, SetStateAction, useContext, useEffect, useState} from "react";
 import {AuthContext} from "./AuthContext.tsx";
-import {CartProductInterface, ProductsInterface} from "../interfaces.tsx";
+import {CartProductInterface} from "../interfaces.tsx";
 import {OrderHistContext} from "./OrderHistContext.tsx";
-
+import axios from "axios";
 
 interface ShoppingContextProps {
   cartTotalQuantity: number;
@@ -32,7 +32,7 @@ export const ShoppingProvider = ({children}: { children: React.ReactNode }) => {
   const {userId} = useContext(AuthContext)!;
   const {addOrder} = useContext(OrderHistContext)!;
 
-  const checkoutCart = () => {
+  const checkoutCart = async () => {
     if (!userId) {
       console.log("Please sign in to continue");
       return;
@@ -41,21 +41,19 @@ export const ShoppingProvider = ({children}: { children: React.ReactNode }) => {
       console.log("Cart is empty");
       return;
     }
-    fetch(`http://localhost:5000/api/carts/checkout/${userId}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-      .then(res => res.json())
-      .then(data => {
-        console.log("Order placed", data)
-        addOrder(data.newOrderHist)
-        setCart([])
-        setCartTotalPrice(0)
-        setCartTotalProducts(0)
-        setCartTotalQuantity(0)
-      })
+    try {
+      const res = await axios.post(`http://localhost:5000/api/carts/checkout/${userId}`)
+
+      console.log("Order placed", res.data)
+      addOrder(res.data.newOrderHist)
+      setCart([])
+      setCartTotalPrice(0)
+      setCartTotalProducts(0)
+      setCartTotalQuantity(0)
+    } catch (e) {
+      console.error('Error placing order:', e);
+    }
+
   }
 
   const decreaseQuantity = (productId: string, by = 1) => {
@@ -111,13 +109,13 @@ export const ShoppingProvider = ({children}: { children: React.ReactNode }) => {
     });
   }
 
-  const addProduct = (productId: string, how_many : number = 1) => {
+  const addProduct = (productId: string, how_many: number = 1) => {
     if (cart.find(product => product.productId === productId)) {
       increaseQuantity(productId, how_many);
-    } else{
-      fetch(`http://localhost:5000/api/products/${productId}`)
-        .then(res => res.json())
-        .then((data: { product: ProductsInterface, success: boolean }) => {
+    } else {
+      axios.get(`http://localhost:5000/api/products/${productId}`)
+        .then(res => {
+          const data = res.data;
           setCart((prevCart) => {
             return [...prevCart, {
               productId: productId,
@@ -131,30 +129,24 @@ export const ShoppingProvider = ({children}: { children: React.ReactNode }) => {
           setCartTotalProducts(prevState => prevState + 1);
           setCartTotalQuantity(prevState => prevState + how_many);
         })
+        .catch(err => console.error('Error adding product:', err));
     }
   }
 
-
   const updateCart = () => {
     if (userId) {
-      fetch(`http://localhost:5000/api/carts/update/${userId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          products: cart
-        })
+      axios.put(`http://localhost:5000/api/carts/update/${userId}`, {
+        products: cart
       })
-        .then(res => res.json())
-        .then(data => {
-          console.log("Cart updated", data)
+        .then(res => {
+          console.log("Cart updated", res.data)
         })
+        .catch(err => console.error('Error updating cart:', err));
     }
   }
 
   useEffect(() => {
-    if (userId){
+    if (userId) {
       updateCart()
     }
   }, [cart]);
@@ -164,15 +156,15 @@ export const ShoppingProvider = ({children}: { children: React.ReactNode }) => {
       let totalQuantity = 0;
       let totalPrice = 0;
       if (userId) {
-        fetch(`http://localhost:5000/api/carts/user/${userId}`)
-          .then(res => res.json())
-          .then(data => {
+        axios.get(`http://localhost:5000/api/carts/user/${userId}`)
+          .then(res => {
+            const data = res.data;
             setCartTotalProducts(data.cart.totalProducts)
             setCartTotalQuantity(data.cart.totalQuantity)
-            const productPromises = data.cart.products.map((product: any) =>
-              fetch(`http://localhost:5000/api/products/${product.productId}`)
-                .then(res => res.json())
-                .then((data: { product: ProductsInterface, success: boolean }) => {
+            const productPromises = data.cart.products.map((product: CartProductInterface) =>
+              axios.get(`http://localhost:5000/api/products/${product.productId}`)
+                .then(res => {
+                  const data = res.data;
                   totalQuantity += product.quantity;
                   totalPrice += product.quantity * data.product.price;
                   return {
@@ -191,6 +183,19 @@ export const ShoppingProvider = ({children}: { children: React.ReactNode }) => {
             setCartTotalPrice(totalPrice)
             setCartTotalQuantity(totalQuantity)
           })
+          .catch(err => {
+            // jesli nie ma koszyka to go tworzymy
+            if (err.response.status === 404) {
+              axios.get(`http://localhost:5000/api/users/${userId}`)
+                .then(res => {
+                  const username = res.data.user.username;
+                  axios.post(`http://localhost:5000/api/carts/add`, {userId, username, products: []})
+                    .then(res2 => {
+                      console.log("Cart created", res2.data)
+                    }).catch(err => console.error('Error creating cart:', err));
+                }).catch(err => console.error('Error getting user:', err));
+            }
+          });
       } else {
         setCartTotalQuantity(0)
         setCart([])

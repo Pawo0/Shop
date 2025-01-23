@@ -23,19 +23,26 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
 
 
   const login = async (username: string, password: string) => {
-    const response = await axios.post("http://localhost:5000/api/users/login", {username, password})
-    const data = response.data;
-    if (data.success) {
-      localStorage.setItem("token", data.token);
-      setToken(data.token);
-      return true;
-    } else {
+    try {
+      const response = await axios.post("http://localhost:5000/api/users/login", {username, password})
+      const data = response.data;
+      console.log(data)
+      if (data.success) {
+        localStorage.setItem("token", data.token);
+        setToken(data.token);
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      console.error('Error logging in', e)
       return false;
     }
   }
 
 
   const register = async (username: string, email: string, password: string) => {
+    try{
     const response = await axios.post("http://localhost:5000/api/users/register", {username, email, password})
     const data = response.data;
     if (data.success) {
@@ -45,6 +52,10 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
     } else {
       return false;
     }
+    } catch (e) {
+      console.error('Error registering', e)
+      return false
+    }
   }
 
   const logout = () => {
@@ -53,15 +64,13 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
   }
 
   const checkPassword = async (password: string) => {
-    const resposne = await fetch("http://localhost:5000/api/users/checkpassword", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({password, userId})
-    })
-    const data = await resposne.json();
-    return data.success
+    try {
+      const response = await axios.post("http://localhost:5000/api/users/checkpassword", {password, userId})
+      const data = response.data;
+      return data.success;
+    } catch (e) {
+      console.error('Error checking password', e)
+    }
   }
 
   useEffect(() => {
