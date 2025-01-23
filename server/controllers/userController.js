@@ -1,5 +1,25 @@
 const User = require('../models/user')
-const generateToken = require('../utils/generateToken')
+const {generateToken, generateRefreshToken} = require('../utils/generateToken')
+const {verify} = require("jsonwebtoken");
+
+let refreshTokens = []
+const token = (req, res) => {
+    const refreshToken = req.body.refreshToken
+    if (!refreshToken) {
+        return res.status(400).json({message: 'Refresh token is required', success: false})
+    }
+    if (!refreshTokens.includes(refreshToken)) {
+        return res.status(403).json({message: 'Invalid refresh token', success: false})
+    }
+    verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+        if (err) {
+            return res.status(403).json({message: 'Invalid refresh token', success: false})
+        }
+        const accessToken = generateToken(user.user)
+        return res.status(200).json({token: accessToken, success: true})
+    })
+    return res.status(403).json({message: 'Invalid refresh token', success: false})
+}
 
 const loginUser = async (req, res) => {
     const {username, password} = req.body
@@ -17,7 +37,9 @@ const loginUser = async (req, res) => {
     const user = await User.findOne(query)
     if (user) {
         const token = generateToken(user)
-        res.status(200).json({token, success: true})
+        const refreshToken = generateRefreshToken(user)
+        refreshTokens.push(refreshToken)
+        res.status(200).json({token, refreshToken, success: true})
     } else {
         res.status(401).json({message: 'Invalid username or password', success: false})
     }
@@ -37,7 +59,9 @@ const registerUser = async (req, res) => {
     }
     const user = await User.create({username, email, password, role})
     const token = generateToken(user)
-    res.status(201).json({user, token, success: true})
+    const refreshToken = generateRefreshToken(user)
+    refreshTokens.push(refreshToken)
+    res.status(201).json({user, token, refreshToken, success: true})
 }
 
 const getAllUsers = async (req, res) => {
@@ -126,5 +150,6 @@ module.exports = {
     deleteUser,
     updateUser,
     checkIfExist,
-    checkPassword
+    checkPassword,
+    token
 }

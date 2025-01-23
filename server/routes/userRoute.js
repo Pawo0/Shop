@@ -9,9 +9,11 @@ const {
     deleteUser,
     updateUser,
     checkIfExist,
-    checkPassword
+    checkPassword,
+    token
 } = require('../controllers/userController')
 
+router.post('/refresh-token', token)
 router.post('/login', loginUser)
 router.post('/register', registerUser)
 router.get('/', getAllUsers)
